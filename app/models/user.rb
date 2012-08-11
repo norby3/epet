@@ -33,7 +33,7 @@ class User < ActiveRecord::Base
     end
     
     def create_corresponding_person
-        @person = self.create_person(:user_id => self.id, :email => self.email)
+        @person = self.create_person(:user_id => self.id.to_i, :email => self.email)
     end
     
 end
