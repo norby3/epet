@@ -7,7 +7,7 @@ Epet5::Application.initialize!
 ActionMailer::Base.smtp_settings = {
   :address              => 'smtp.gmail.com',
   :port                 => 587,
-  #:domain               => 'epetfolio.com',
+  :domain               => 'epetfolio.com',
   :user_name            => 'epetfolio@gmail.com',
   :password             => 'fluffyfid0',
   :authentication       => :plain,
