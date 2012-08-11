@@ -1,0 +1,25 @@
+
+<table class="table table-striped table-condensed">
+
+<tr>
+    <td>Name</td>
+    <td><%= @person.first_name %> <%= @person.last_name %></td>
+</tr>
+
+<tr>
+    <td>Email</td>
+    <td><%= @person.email %></td>
+</tr>
+
+<tr>
+    <td>Mobile Phone</td>
+    <td><%= number_to_phone(@person.mobile_phone, :area_code => true) %></td>
+</tr>
+
+<tr>
+    <td>Other Email</td>
+    <td><%= @person.email2 %></td>
+</tr>
+
+
+</table>

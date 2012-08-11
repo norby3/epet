@@ -1,0 +1,34 @@
+
+<% if @person.caretakers.owner.count > 0 %>
+
+    <table class="table table-striped">
+        <% @person.pets.each do |pet| %>
+            <tr>
+                <td>
+                    <% if pet.petphotos.count == 0 %>
+                        <%= image_tag "no-photo-60x60.png" %>
+                    <% else %>
+                        <%= image_tag pet.petphotos[0].image_url(:sixtypixels) %>
+                    <% end %>
+                </td>
+                <td>
+                    <%= pet.name %>
+                </td>
+                <td>
+                    <%= pet.breed %>
+                </td>
+            </tr>
+        <% end %>
+    </table>
+
+<% else %>
+
+    <p class="splash_jewel_description">To start, the focus is on dogs - 
+        but support for other kinds of pets will be added.
+    </p>
+
+<% end %>
+
+
+
+

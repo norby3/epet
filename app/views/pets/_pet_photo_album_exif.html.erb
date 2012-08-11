@@ -1,0 +1,19 @@
+
+<li class="span3">
+    <div class="thumbnail">
+        <%= image_tag photo.image_url(:twosixtybyoneeighty) %>
+        <dl>  
+            <dt>Camera Data -- Photo Taken: </dt>
+            <dd><%= photo.image_created_at %></dd>
+
+            <dt>Address: </dt>
+            <dd><%= photo.address %></dd>
+
+            <dt>Latitude/Longitude: </dt>
+            <dd><%= number_with_precision(photo.latitude, :precision => 5) %> 
+                <%= number_with_precision(photo.longitude, :precision => 5) %>
+            </dd>
+        </dl>
+
+    </div>
+</li>

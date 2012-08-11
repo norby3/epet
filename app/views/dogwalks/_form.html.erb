@@ -1,0 +1,95 @@
+
+<%= render :partial => "shared/dog_info", :locals => { :pet => @pet } %>
+
+<%= form_for @dogwalk, :html => { :class => 'form-horizontal', :multipart => true } do |f| %>
+
+    <%= f.hidden_field :pet_id %>
+    <%= f.hidden_field :id %>
+    <%= f.hidden_field :person_id %>
+    <!-- < %= f.hidden_field :dogwalker_id %> -->
+    <%= f.hidden_field :timezone %>
+    <%= f.hidden_field :start %>
+    <%= f.hidden_field :stop %>
+    <%= f.hidden_field :start_as_millis %>
+    <%= f.hidden_field :stop_as_millis %>
+    <%= f.hidden_field :time_elapsed %>
+    <%= f.hidden_field :status %>
+
+    <!-- ~~~~~~~~~~~    Extras - Stopwatch   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <div class="row top_border2 height_3em" id="dogwalk_stopwatch_container">
+        <div class="span3">
+            <p id="stopwatch_elapsed_time" class="double_font_size">00:00:00</p>
+        </div>
+        <div class="span1">
+            <p class="btn btn-success" id="stopwatch_multi_button">Start</p>
+        </div>
+    </div>
+
+    <!--  ~~~~~~~~~~~~~~~~~~~~~~~~~  Basic Dogwalk Fields  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <div class="container">
+        <div class="row top_border sixc">
+            <div class="span3">  
+                <%= f.text_field :pee, :class => 'text_field uneditable-input' %>
+            </div>    
+            <div class="span1">
+                <p><input type="button" class="btn btn-primary" id="pee-button" value="pee"></input></p>
+            </div>
+        </div>
+        <div class="row top_border">
+            <div class="span3">
+              <%= f.text_field :poo, :class => 'text_field uneditable-input' %>
+            </div>    
+            <div class="span1">
+                <p><input type="button" class="btn btn-primary" id="poo-button" value="poo"></input></p>
+            </div>
+        </div>
+        <div class="row top_border sixc">
+          <div class="span3">
+              <%= f.text_field :water, :class => 'text_field uneditable-input' %>
+          </div>    
+          <div class="span1">
+              <p><input type="button" class="btn btn-primary" id="water-button" value="water"></input></p>
+          </div>
+        </div>
+        <div class="row top_border">
+            <div class="span3">
+              <%= f.text_field :treat, :class => 'text_field uneditable-input' %>
+            </div>
+            <div class="span1">
+              <p><input type="button" class="btn btn-primary" id="treat-button" value="treat"></input></p>
+            </div>
+        </div>
+        <div class="row top_border height_sixem sixc">
+            <div class="span3">
+                <%= f.text_area :comments, :class => "input", :rows => "3", :placeholder => "Type comments here.." %>
+            </div>
+        </div>
+    
+        <!-- ~~~~~~~~~~~    Extras - Dogwalk Session Photo  ~~~~~~~~~~~~~~~~~~~ -->
+        <div class="row top_border2">
+            <div class="span3">
+                <% if @dogwalk.petphoto.blank? %>
+                    <%= image_tag "no-photo-200x200.png" %>
+                <% else %>
+                    <%= image_tag @dogwalk.petphoto.image_url(:twosixtybyoneeighty) %>
+                <% end %>                
+            </div>
+            <div class="span1">
+                <%= f.fields_for :petphoto do |pic| %>
+                  <%= pic.file_field "image" %>
+                <% end %>
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="form-actions">
+        <!-- < %= f.submit nil, :class => 'btn btn-primary' %> -->
+        <%= f.submit "Save", :class => 'btn btn-primary' %>
+        <%= f.submit "Finished Dogwalk", :name => "save_send_button", :class => 'btn btn-primary' %>
+        <!-- < %= link_to "Save & Send", "/foo-send-path/#{@client.id}", :class => 'btn btn-primary' %> -->
+        <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                 person_path(current_user.person.id), :class => 'btn' %>
+    </div>
+
+<% end %>

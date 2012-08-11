@@ -1,0 +1,33 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  pet: 
+  person: 
+  pee: MyString
+  poo: MyString
+  water: MyString
+  treat: MyString
+  food: MyString
+  comments: MyString
+  start_as_millis: MyString
+  stop_as_millis: MyString
+  start: 2012-08-06 18:58:09
+  stop: 2012-08-06 18:58:09
+  time_elapsed: MyString
+  status: MyString
+
+two:
+  pet: 
+  person: 
+  pee: MyString
+  poo: MyString
+  water: MyString
+  treat: MyString
+  food: MyString
+  comments: MyString
+  start_as_millis: MyString
+  stop_as_millis: MyString
+  start: 2012-08-06 18:58:09
+  stop: 2012-08-06 18:58:09
+  time_elapsed: MyString
+  status: MyString

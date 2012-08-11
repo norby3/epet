@@ -1,0 +1,35 @@
+<h1>Listing invitations</h1>
+
+<table>
+  <tr>
+    <th>Email</th>
+    <th>Verify email token</th>
+    <th>Verify email sent at</th>
+    <th>Requestor email</th>
+    <th>Ip address</th>
+    <th>Request count</th>
+    <th>Status</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @invitations.each do |invitation| %>
+  <tr>
+    <td><%= invitation.email %></td>
+    <td><%= invitation.verify_email_token %></td>
+    <td><%= invitation.verify_email_sent_at %></td>
+    <td><%= invitation.requestor_email %></td>
+    <td><%= invitation.ip_address %></td>
+    <td><%= invitation.request_count %></td>
+    <td><%= invitation.status %></td>
+    <td><%= link_to 'Show', invitation %></td>
+    <td><%= link_to 'Edit', edit_invitation_path(invitation) %></td>
+    <td><%= link_to 'Destroy', invitation, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Invitation', new_invitation_path %>

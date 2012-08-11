@@ -1,0 +1,40 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Email:</b>
+  <%= @invitation.email %>
+</p>
+
+<p>
+  <b>Verify email token:</b>
+  <%= @invitation.verify_email_token %>
+</p>
+
+<p>
+  <b>Verify email sent at:</b>
+  <%= @invitation.verify_email_sent_at %>
+</p>
+
+<p>
+  <b>Requestor email:</b>
+  <%= @invitation.requestor_email %>
+</p>
+
+<p>
+  <b>Ip address:</b>
+  <%= @invitation.ip_address %>
+</p>
+
+<p>
+  <b>Request count:</b>
+  <%= @invitation.request_count %>
+</p>
+
+<p>
+  <b>Status:</b>
+  <%= @invitation.status %>
+</p>
+
+
+<%= link_to 'Edit', edit_invitation_path(@invitation) %> |
+<%= link_to 'Back', invitations_path %>

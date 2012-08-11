@@ -1,0 +1,73 @@
+<%- model_class = @dogwalk.class -%>
+<div class="page-header">
+  <h1><%= @dogwalk.pet.name.possessive %> Doggie Report Card</h1>
+</div>
+
+<dl class="dl-horizontal">
+  <dt><strong>Date:</strong></dt>
+  <dd><%= @dogwalk.created_at.strftime("%a %b %d, %Y") %></dd>
+  <dt><strong>Time:</strong></dt>
+  <dd><%= @dogwalk.created_at.strftime("%r %Z") %></dd>
+  <dt><strong>Timezone:</strong></dt>
+  <dd><%= @dogwalk.timezone %></dd>
+  <dt>&nbsp;</dt>
+  <dd>&nbsp;</dd>
+  <dt><strong><%= model_class.human_attribute_name(:pee) %>:</strong></dt>
+  <dd><%= @dogwalk.pee %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:poo) %>:</strong></dt>
+  <dd><%= @dogwalk.poo %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:water) %>:</strong></dt>
+  <dd><%= @dogwalk.water %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:treat) %>:</strong></dt>
+  <dd><%= @dogwalk.treat %></dd>
+  <dt>&nbsp;</dt>
+  <dd>&nbsp;</dd>
+  <dt><strong><%= model_class.human_attribute_name(:comments) %>:</strong></dt>
+  <dd><%= @dogwalk.comments %></dd>
+  <dt>&nbsp;</dt>
+  <dd>&nbsp;</dd>
+  <% if !@dogwalk.time_elapsed.blank? %>
+      <dt><strong>Duration:</strong></dt>
+      <dd><%= @dogwalk.time_elapsed %></dd>
+  <% end %>
+  <dt>&nbsp;</dt>
+  <dd>&nbsp;</dd>
+  <% if @dogwalk.petphoto %>
+      <!-- hidden fields are for javascript use -->
+      <%= hidden_field_tag "photo-latitude", @dogwalk.petphoto.latitude %>
+      <%= hidden_field_tag "photo-longitude", @dogwalk.petphoto.longitude  %>
+
+      <% if @dogwalk.petphoto.image %>
+          <dt><strong>Dogwalk Photo:</strong></dt>
+          <dd><%= image_tag @dogwalk.petphoto.image_url(:twosixtybyoneeighty) %></dd>
+      <% end %>
+      <% if @dogwalk.petphoto.address %>
+          <dt>Photo's GPS Data</dt>
+          <dd>&nbsp;</dd>
+          <dt><strong>Address:</strong></dt>
+          <dd><%= @dogwalk.petphoto.address %></dd>
+          <dt><strong>Latitude:</strong></dt>
+          <dd><%= number_with_precision(@dogwalk.petphoto.latitude, :precision => 5)  %></dd>
+          <dt><strong>Longitude:</strong></dt>
+          <dd><%= number_with_precision(@dogwalk.petphoto.longitude, :precision => 5) %></dd>
+          <dt><strong>Timestamp:</strong></dt>
+          <dd><%= @dogwalk.petphoto.image_created_at %></dd>
+          <dt>&nbsp;</dt>
+          <dd>&nbsp;</dd>
+
+          <dt><strong>Photo Location:</strong></dt>
+          <dd><div id="map_canvas"></div>
+          </dd>
+      <% end %>
+  <% end %>
+    
+</dl>
+
+
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
+<div class="form-actions">
+  <%= link_to "Back", person_path(current_user.person), :class => 'btn'  %>
+</div>
+
+

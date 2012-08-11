@@ -1,0 +1,18 @@
+<%= simple_form_for(@person, :html => {:class => "form-horizontal"}) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :first_name %>
+    <%= f.input :last_name %>
+    <%= f.input :email, :label => 'Personal Email' %>
+    <%= f.input :mobile_phone %>
+    <%= f.input :email2, :label => 'Other/Work Email' %>
+    <%= f.input :phone2, :label => 'Other Phone' %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit, "Save", :class => "btn btn-primary" %>
+    <%= link_to 'Cancel', person_path(@person), :class => "btn" %>
+    
+  </div>
+<% end %>

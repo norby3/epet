@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  person_a_id: 1
+  person_b_id: 1
+  category: MyString
+  invitation_id: 1
+  status: MyString
+
+two:
+  person_a_id: 1
+  person_b_id: 1
+  category: MyString
+  invitation_id: 1
+  status: MyString

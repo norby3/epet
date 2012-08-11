@@ -1,0 +1,33 @@
+
+<% if current_user.person.pets.count > 1 %>
+    <div class="sidebar_header">My Pet Actions</div>
+<% else %>
+    <div class="sidebar_header">My Pet Actions</div>
+<% end %>
+
+<!--  ~~~~~~~~~~~  Photo Dropzones  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
+<!-- for each pet owned or f&f pet, add a photo drop area -->
+<% current_user.person.pets.each do |pet| %>
+    <div class="row sidebar_row">
+        <div class="span2">
+            <p>
+            <%= link_to "Upload<br />#{pet.name}<br />Photos".html_safe, 
+                     new_pet_petphoto_path(pet), :class => "btn btn-primary" %>
+            </p>
+            <p>
+                <% @dogwalk = Dogwalk.where(:pet_id => pet.id, :status => 'active').first %>
+                <% if @dogwalk %>
+                    <%= link_to "Edit<br />#{pet.name}<br />Dogwalk".html_safe, 
+                             edit_dogwalk_path(@dogwalk.id), :class => "btn btn-primary" %>
+                <% else %>
+                    <%= link_to "Start<br />#{pet.name}<br />Dogwalk".html_safe, 
+                         new_dogwalk_path(:pet_id => pet.id), :class => "btn btn-primary" %>
+                <% end %>
+            </p>
+        </div>
+    </div>
+<% end %>
+
+
+<!-- loop thru caretakers??  -->
+

@@ -1,0 +1,55 @@
+
+<div class="page-header">
+    <div class="row">
+        <div class="span4">
+            <h1>My ePetfolio Pets</h1>
+        </div>
+    </div>
+</div>
+
+<div data-role="content">
+
+<!--  layout pattern - basic data in first thumbnail, photos rest of thumbnails -->
+
+
+    <!-- loop thru pets - create thumbnail for each one...             -->
+    <% @pets.each_with_index do |pet, index| %>
+    <ul class="thumbnails border_bottom">
+        <li class="span3">
+            <% if @pets.count > 1 %>
+                <!-- <h3>Pet < %= 1+index %> of < %= @pets.count %>: < %= pet.name %></h3> -->
+                <h3>Pet <%= 1+index %>: <%= pet.name %></h3>
+            <% else %>
+                <h3><%= pet.name %></h3>
+            <% end %>
+            <% if !pet.birthdate.blank? %> <p>age / birthday: <%= pet.age %> / <%= pet.birthdate %></p><% end %>
+            <% if !pet.gender.blank? %>    <p>gender: <%= pet.gender %></p>                            <% end %>
+            <% if !pet.breed.blank? %>     <p>breed: <%= pet.breed %></p>                              <% end %>
+            <% if !pet.weight.blank? %>    <p>weight: <%= pet.weight %></p>                            <% end %>
+            <p># photos: <%= pet.petphotos.count %></p>
+            <p>
+                <%= link_to "Add #{pet.name} Photo", new_pet_petphoto_path(pet), :class => 'btn' %>
+            </p>            
+        </li>
+        <% pet.petphotos.each do |photo| %>
+            <!-- render "pet_photo_album_exif"  -->
+            <li class="span1">
+                <div class="thumbnail">
+                    <%= image_tag photo.image_url(:sixtypixels) %>
+                </div>
+            </li>
+        <% end %>
+  </ul>
+  <% end %>
+
+
+<div class="form-actions">
+    <%= link_to "Add Pet", new_pet_path, :class => "btn btn-primary" %>
+    <%= link_to "Back",  person_path(@person), :class => 'btn' %>
+</div>
+
+</div>
+
+
+
+

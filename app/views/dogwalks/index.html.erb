@@ -1,0 +1,49 @@
+<h1>Listing dogwalks</h1>
+
+<table>
+  <tr>
+    <th>Pet</th>
+    <th>Person</th>
+    <th>Pee</th>
+    <th>Poo</th>
+    <th>Water</th>
+    <th>Treat</th>
+    <th>Food</th>
+    <th>Comments</th>
+    <th>Start as millis</th>
+    <th>Stop as millis</th>
+    <th>Start</th>
+    <th>Stop</th>
+    <th>Time elapsed</th>
+    <th>Status</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @dogwalks.each do |dogwalk| %>
+  <tr>
+    <td><%= dogwalk.pet %></td>
+    <td><%= dogwalk.person %></td>
+    <td><%= dogwalk.pee %></td>
+    <td><%= dogwalk.poo %></td>
+    <td><%= dogwalk.water %></td>
+    <td><%= dogwalk.treat %></td>
+    <td><%= dogwalk.food %></td>
+    <td><%= dogwalk.comments %></td>
+    <td><%= dogwalk.start_as_millis %></td>
+    <td><%= dogwalk.stop_as_millis %></td>
+    <td><%= dogwalk.start %></td>
+    <td><%= dogwalk.stop %></td>
+    <td><%= dogwalk.time_elapsed %></td>
+    <td><%= dogwalk.status %></td>
+    <td><%= link_to 'Show', dogwalk %></td>
+    <td><%= link_to 'Edit', edit_dogwalk_path(dogwalk) %></td>
+    <td><%= link_to 'Destroy', dogwalk, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Dogwalk', new_dogwalk_path %>

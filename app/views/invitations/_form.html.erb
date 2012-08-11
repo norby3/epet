@@ -1,0 +1,17 @@
+<%= simple_form_for(@invitation) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :email %>
+    <%= f.input :verify_email_token %>
+    <%= f.input :verify_email_sent_at %>
+    <%= f.input :requestor_email %>
+    <%= f.input :ip_address %>
+    <%= f.input :request_count %>
+    <%= f.input :status %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

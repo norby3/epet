@@ -1,0 +1,75 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Pet:</b>
+  <%= @dogwalk.pet %>
+</p>
+
+<p>
+  <b>Person:</b>
+  <%= @dogwalk.person %>
+</p>
+
+<p>
+  <b>Pee:</b>
+  <%= @dogwalk.pee %>
+</p>
+
+<p>
+  <b>Poo:</b>
+  <%= @dogwalk.poo %>
+</p>
+
+<p>
+  <b>Water:</b>
+  <%= @dogwalk.water %>
+</p>
+
+<p>
+  <b>Treat:</b>
+  <%= @dogwalk.treat %>
+</p>
+
+<p>
+  <b>Food:</b>
+  <%= @dogwalk.food %>
+</p>
+
+<p>
+  <b>Comments:</b>
+  <%= @dogwalk.comments %>
+</p>
+
+<p>
+  <b>Start as millis:</b>
+  <%= @dogwalk.start_as_millis %>
+</p>
+
+<p>
+  <b>Stop as millis:</b>
+  <%= @dogwalk.stop_as_millis %>
+</p>
+
+<p>
+  <b>Start:</b>
+  <%= @dogwalk.start %>
+</p>
+
+<p>
+  <b>Stop:</b>
+  <%= @dogwalk.stop %>
+</p>
+
+<p>
+  <b>Time elapsed:</b>
+  <%= @dogwalk.time_elapsed %>
+</p>
+
+<p>
+  <b>Status:</b>
+  <%= @dogwalk.status %>
+</p>
+
+
+<%= link_to 'Edit', edit_dogwalk_path(@dogwalk) %> |
+<%= link_to 'Back', dogwalks_path %>

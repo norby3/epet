@@ -1,0 +1,183 @@
+
+/*   #4f2170    */
+
+.our_purple { color: #8339EA; }  
+
+footer {
+    margin-top: 2em;
+}
+.vertical_line {
+    border-bottom: 1px dashed #8339EA;   /*  #F2F2F2;  */
+    margin: 5px 0;
+}
+.top_border, .top_border2 {
+    border-top: 1px solid #FFEBFF;
+    padding-top: 5px;
+    width: 40%;
+}
+.top_border2 {
+    width: 60%;
+}
+#stopwatch_label {
+    text-align: center;
+}
+.sixc {
+    background-color: #FFFAFF;
+}
+.cyan {
+    background-color: cyan;
+}
+.lightblue {
+    background-color: lightblue;
+}
+.gray {
+    background-color: gray;
+}
+.silver {
+    background-color: silver;
+}
+
+.center {
+    text-align: center;
+}
+.double_font_size {
+    font-size: 200%;
+}
+#stopwatch_elapsed_time {
+    margin-top: 5px;
+    margin-bottom: 5px;
+/*    padding-top: 20px;*/
+}
+.height_3em {
+    height: 3em;
+}
+.height_fourem {
+    height: 4em;
+}
+.height_sixem {
+    height: 6em;
+}
+/*.span1 {
+    background-color: #bbb;
+}
+.span2 {
+    background-color: #ccc;
+}
+.span3 {
+    background-color: #ddd;
+}
+.span4 {
+    background-color: #eee;
+}*/
+
+
+#map_canvas {
+    width: 300px;
+    height: 200px;
+}
+.splash_row {
+    margin-bottom: 1em;
+}
+.green-bold-font {
+    color: green;
+    font-weight: bold;
+}
+#epet_sidebar {
+    min-height: 500px;
+    background: #F5EBFF;
+    text-align: center;
+}
+#splashSlideshow {
+    background-color: white;
+/*    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;*/
+/*    border: 1px dashed gray;*/
+/*    text-align: center; */   
+/*    min-height: 268px;*/
+}
+/*  to center pictures in the slideshow  */
+.carousel-inner { text-align: center; }
+
+.carousel .item > img { display: inline-block; }
+
+
+.splash_jewel {
+    min-height: 250px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    position: relative;
+/*    border: 1px solid #F0D1FF; */
+    background: #F5EBFF; /*#FAF5FF;*/ /*#F0D1FF;*/
+}
+.background_white { background: white; }
+.splash_jewel_heading {
+    padding: 5px 0;
+    font-size: 150%;
+    font-weight: bolder;
+    text-align: center;
+}
+.splash_report_card {
+    background: #E6CCFF;
+    height: 50px;
+}
+.sidebar_row {
+    padding-top: 1em;
+}
+.sidebar_header {
+    text-align: center;
+    font-weight: bold;
+}
+.photo_dropzone {
+/*    height: 100px;*/
+    background: #ccc;
+/*    border: 2px dashed gray; */
+/*    padding-top: 1em;*/
+/*    text-align: center;*/
+}
+
+#splash_pets {
+/*    background: #F0D1FF;*/
+/*    border-top: 1px solid #F0D1FF;
+    border-bottom: 1px solid #F0D1FF;
+*/}
+#splash_family_friends {
+/*    background: #F0D1FF;*/
+}
+#splash_animal_care_givers {
+/*    background: #F0D1FF;*/
+}
+#splash_profile {
+/*    background: #F0D1FF;*/
+}
+.splash_jewel_description {
+    padding: 5px;
+}
+.splash_jewel_buttons {
+    text-align: center;
+/*    padding: 0 5px 5px 0;*/
+    padding: 2px 2px 0 0;
+    position: absolute; 
+    top: 0;
+    right: 0;    
+}
+.pic_dropzone {
+    height: 150px;
+    border: 1px dashed #F0D1FF;
+}
+.border_bottom {
+    border-bottom: 1px solid #ccc;
+}
+#new_invitation {
+    text-align: center;
+}
+.subheading {
+    font-weight: bold;
+    text-align: center;
+}
+
+
+
+
+

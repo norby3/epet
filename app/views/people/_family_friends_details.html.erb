@@ -1,0 +1,38 @@
+
+<% if !@invitations %>
+    <p class="splash_jewel_description">People that care about my pet:
+        <ul><li>husband / wife / partner / kids / parents / brothers / sisters / cousins</li>
+            <li>friends / neighbors / colleagues</li>
+            <li>sometimes they pet sit for free (or vice versa)</li>
+            <li>they'd like to see your pet photos</li>
+            <li>they'd laugh at your doggie report cards</li>
+        </ul>
+    </p>
+
+<% else %>
+
+<table class="table table-condensed table-striped">
+
+    <% if @person.familyandfriends.count > 0 %>
+        <% @person.familyandfriends.each do |fnf| %>
+            <tr><td><%= fnf.email %></td></tr>
+        <% end %>
+    <% end %>
+
+    <% if @invitations %>
+        <% @invitations.each do |invitation| %>
+           <tr><td><%= invitation.email %> was invited</td></tr>
+        <% end %>
+    <% end %>
+</table>
+
+<% end %>
+
+
+<!-- < % if @person.person_connections.count > 0 %>
+    < % @person.person_connections.each do |pc| %>     -->
+
+
+<!-- < % if !@invitations && !@person_connections %> -->
+
+

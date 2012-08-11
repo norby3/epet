@@ -1,0 +1,18 @@
+<!--  lil partial to show the dog's 75px picture, name, breed, gender, etc -->
+<div class="container">
+    <div class="row height_fourem">
+        <div class="span1">
+
+            <!-- < % if pet.image.blank? %> -->
+            <% if pet.petphotos.count < 1 %>
+                <!-- < img src="http://placehold.it/260x180" alt=""> -->
+                <%= image_tag "no-photo-75x75.png" %>
+            <% else %>
+                <!-- < %= image_tag pet.image_url(:seventyfivepixels) %> -->
+                <%= image_tag pet.petphotos[0].image_url(:sixtypixels) %>
+            <% end %> 
+        </div> 
+        <div class="span2"><h3><%= pet.name %></h3><%= pet.gender %> <%= pet.breed %></div>
+    </div>
+</div>
+

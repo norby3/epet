@@ -1,0 +1,93 @@
+
+<div class="page-header">
+    <div class="row">
+        <div class="span4">
+            <h1>My ePetfolio</h1>
+        </div>
+        <%= render "shared/flash_msg_area" %>
+    </div>
+</div>
+
+<div data-role="content">
+    
+    <!--  ~~~~~~~~~~~  Movie Screen     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
+    <div class="row splash_row">
+        <div class="span7" id="splashSlideshow">
+                <%= render "some_sample_photos" %>
+        </div>
+    </div>
+
+    <!--  ~~~~~~~~~~~  Report Cards     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
+    <div class="row splash_row">
+        <div class="span5 offset1 splash_jewel" id="splash_report_card_list">
+            <div class="splash_jewel_heading">Report Cards</div>
+                <%= render "report_card_list" %>
+        </div>
+    </div>
+
+    <!--  ~~~~~~~~~~~  Pets     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
+    <div class="row splash_row">
+        <div class="span5 offset1 splash_jewel" id="splash_pets">
+            <div class="splash_jewel_heading">My Pets</div>
+                <%= render :partial => "pet_details" %>
+            <div class="splash_jewel_buttons">
+                <% if @person.caretakers.count > 0 %>
+                    <%= link_to "Update", pets_path, :class => "btn btn-mini"%>
+                <% else %>
+                    <%= link_to "Add", new_pet_path, :class => "btn btn-mini"%>
+                <% end %>
+            </div>
+        </div>
+    </div>
+
+    <!--  ~~~~~~~~~~~  Family & Friends   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
+    <div class="row splash_row">
+        <div class="span5 offset1 splash_jewel" id="splash_family_friends">
+            <div class="splash_jewel_heading">My Family & Friends</div>
+            <%= render "invite_form" %>
+            <%= render "family_friends_details" %>
+
+            <div class="splash_jewel_buttons">
+                <!-- < %= link_to "Update", edit_caretakers_path, :class => "btn btn-mini"%> -->
+            </div>
+
+        </div>
+    </div>
+
+    <!--  ~~~~~~~~~~~  Pro Animal Care Givers  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
+    <div class="row splash_row">
+        <div class="span5 offset1 splash_jewel" id="splash_animal_care_givers">
+            <div class="splash_jewel_heading">My Pet Pros</div>
+            <p class="splash_jewel_description">Paid professionals that care for my pet:
+                <ul><li>dog walker / pet sitter</li>
+                    <li>veterinarian / vet clinic</li> 
+                    <li>groomer</li>
+                    <li>doggie daycare / boarding</li>
+                    <li>pet food store</li>
+                    <li>doggie psychiatrist :)</li></ul></p>
+            <p class="splash_jewel_description">These folks will create your doggie report cards.</p>
+            <div class="splash_jewel_buttons">
+                <%= link_to "Update", edit_person_path, :class => "btn btn-mini"%>
+            </div>        
+        </div>
+    </div>
+
+    <!--  ~~~~~~~~~~~  Profile       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
+    <div class="row splash_row">
+        <div class="span5 offset1 splash_jewel" id="splash_profile">
+            <div class="splash_jewel_heading">My Profile</div>
+            <% if @person.updated_at.eql?(@person.created_at) %>
+                <%= render :partial => "profile_none" %>
+            <% else %>
+                <%= render :partial => "profile_details" %>
+            <% end %>
+            <div class="splash_jewel_buttons">
+                <%= link_to "Update", edit_person_path, :class => "btn btn-mini"%>
+            </div>
+        </div>
+    </div>
+</div>  <!-- data-role="content" -->
+
+
+
+

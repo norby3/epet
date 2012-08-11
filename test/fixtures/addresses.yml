@@ -1,0 +1,33 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  line1: MyString
+  line2: MyString
+  line3: MyString
+  line4: MyString
+  locality: MyString
+  region: MyString
+  postcode: MyString
+  country: MyString
+  description: MyString
+  updated_by: MyString
+  expired_at: 2012-07-24
+  addressable_id: 1
+  addressable_type: MyString
+  status: MyString
+
+two:
+  line1: MyString
+  line2: MyString
+  line3: MyString
+  line4: MyString
+  locality: MyString
+  region: MyString
+  postcode: MyString
+  country: MyString
+  description: MyString
+  updated_by: MyString
+  expired_at: 2012-07-24
+  addressable_id: 1
+  addressable_type: MyString
+  status: MyString

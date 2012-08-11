@@ -1,0 +1,80 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>User:</b>
+  <%= @person.user_id %>
+</p>
+
+<p>
+  <b>First name:</b>
+  <%= @person.first_name %>
+</p>
+
+<p>
+  <b>Last name:</b>
+  <%= @person.last_name %>
+</p>
+
+<p>
+  <b>Email:</b>
+  <%= @person.email %>
+</p>
+
+<p>
+  <b>Mobile phone:</b>
+  <%= @person.mobile_phone %>
+</p>
+
+<p>
+  <b>Image:</b>
+  <%= @person.image %>
+</p>
+
+<p>
+  <b>Email2:</b>
+  <%= @person.email2 %>
+</p>
+
+<p>
+  <b>Email3:</b>
+  <%= @person.email3 %>
+</p>
+
+<p>
+  <b>Phone2:</b>
+  <%= @person.phone2 %>
+</p>
+
+<p>
+  <b>Phone3:</b>
+  <%= @person.phone3 %>
+</p>
+
+<p>
+  <b>Timezone:</b>
+  <%= @person.timezone %>
+</p>
+
+<p>
+  <b>Country:</b>
+  <%= @person.country %>
+</p>
+
+<p>
+  <b>Personas:</b>
+  <%= @person.personas %>
+</p>
+
+<p>
+  <b>Status:</b>
+  <%= @person.status %>
+</p>
+
+<p>
+  <b>Updated by:</b>
+  <%= @person.updated_by %>
+</p>
+
+
+<%= link_to 'Edit', edit_person_path(@person) %> |
+<%= link_to 'Back', people_path %>

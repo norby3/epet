@@ -1,0 +1,9 @@
+
+<%= form_for @invitation, :html => { :class => "new_invitation well form-inline" } do |f| %>    
+
+    <%= f.label :email, "Free Sign Up" %>
+    <%= f.text_field :email, :placeholder => "Email" %>
+
+    <button type="submit" class="btn">Go</button>
+
+<% end %>

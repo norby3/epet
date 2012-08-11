@@ -1,0 +1,8 @@
+<%= simple_form_for(@invitation, :html => {:class => "well form-inline"}) do |f| %>
+
+    <%= f.input :email, :placeholder => "Email", :label => false, :input_html => { :class => 'input-small' } %>
+
+    <%= f.button :submit, "Invite", :class => "btn-small btn-primary" %>
+
+<% end %>
+

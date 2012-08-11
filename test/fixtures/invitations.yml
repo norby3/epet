@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  email: MyString
+  verify_email_token: MyString
+  verify_email_sent_at: 2012-07-29 17:56:36
+  requestor_email: MyString
+  ip_address: MyString
+  request_count: 1
+  status: MyString
+
+two:
+  email: MyString
+  verify_email_token: MyString
+  verify_email_sent_at: 2012-07-29 17:56:36
+  requestor_email: MyString
+  ip_address: MyString
+  request_count: 1
+  status: MyString

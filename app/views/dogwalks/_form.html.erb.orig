@@ -1,0 +1,24 @@
+<%= simple_form_for(@dogwalk) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.association :pet %>
+    <%= f.association :person %>
+    <%= f.input :pee %>
+    <%= f.input :poo %>
+    <%= f.input :water %>
+    <%= f.input :treat %>
+    <%= f.input :food %>
+    <%= f.input :comments %>
+    <%= f.input :start_as_millis %>
+    <%= f.input :stop_as_millis %>
+    <%= f.input :start %>
+    <%= f.input :stop %>
+    <%= f.input :time_elapsed %>
+    <%= f.input :status %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

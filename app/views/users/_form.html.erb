@@ -1,0 +1,22 @@
+
+<%= simple_form_for @user, :html => { :class => 'form-horizontal' } do |f| %>
+    <%= f.hidden_field :id %>
+    <%= f.hidden_field :status %>
+
+    <fieldset>
+
+        <%= f.input :email %>
+        <%= f.input :password %>
+        <%= f.input :password_confirmation %>
+
+    </fieldset>
+
+    <div class="form-actions">
+      <%= f.submit "Save", :class => 'btn btn-primary' %>
+      <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                  root_url, :class => 'btn' %>
+    </div>     <!-- form-actions -->
+<% end %>
+    
+
+  

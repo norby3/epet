@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  pet_id: MyString
+  person_id: MyString
+  organization_id: MyString
+  primary_role: MyString
+  secondary_role: MyString
+  started_at: MyString
+  ended_at: MyString
+  status: MyString
+
+two:
+  pet_id: MyString
+  person_id: MyString
+  organization_id: MyString
+  primary_role: MyString
+  secondary_role: MyString
+  started_at: MyString
+  ended_at: MyString
+  status: MyString

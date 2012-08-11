@@ -1,0 +1,36 @@
+
+<table class="table table-striped">
+
+    <% @person.pets.each do |pet| %>
+
+        <% @active_walks = pet.dogwalks.where(:status => 'active' ) %>
+
+        <% if @active_walks.count > 0 %>
+
+            <% @active_walks.each do |a_dogwalk| %>
+                <tr>
+                    <td><%= pet.name %></td> 
+                    <td><%= a_dogwalk.start.in_time_zone(a_dogwalk.timezone).strftime("%a %I:%M") %></td>
+                    <td><%= a_dogwalk.status%></td>
+                    <td><%= link_to "Edit", edit_dogwalk_path(a_dogwalk), :class => "btn btn-success" %></td>
+                </tr>
+            <% end %>
+        <% end %>
+    
+        <% @recent_walks = pet.dogwalks.where(:status => 'done').order(:updated_at => 'desc').limit(5) %>
+    
+        <% if @recent_walks.count > 0 %>
+            <% @recent_walks.each do |r_dogwalk| %>
+            <tr>
+                <td><%= pet.name %></td> 
+                <td><%= r_dogwalk.start.in_time_zone(r_dogwalk.timezone).strftime("%a %b %d %I:%M") %></td>
+                <td><%= r_dogwalk.status%></td>
+                <td><%= link_to "View", r_dogwalk, :class => "btn" %></td>
+            </tr>
+            <% end %>
+        <% end %>
+        
+        
+    <% end %>
+
+</table>

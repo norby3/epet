@@ -1,0 +1,47 @@
+
+
+<% if !@current_user %>   <!--  sign-up use case  -->
+
+    <p>Thanks for using ePetfolio!</p>
+
+    <p>This email verification step is important for protecting you and your pet's information.</p>
+
+    <p>
+    <%= link_to "Click here to continue by choosing a password", 
+             "#{root_url}email_invite?id=#{@invitation.verify_email_token}"  %>
+    </p>
+
+    <br />
+    <br />
+    <p>If you did not request to use ePetfolio, please ignore this email.</p>
+
+
+<% elsif @current_user && @invitation.existing_user.eql?("true") %>  <!-- invitation to a person already know to epet -->
+    An existing user is inviting another existing user to be in their F&F
+
+    <p>Hello from ePetfolio</p>
+    <p><%= @current_user.email %> would like to invite you to join her/his Family & Friends network on ePetfolio</p>
+    
+    <p>
+        <%= link_to "Click here to accept", 
+                 "#{root_url}email_invite?id=#{@invitation.verify_email_token}"  %>
+    </p>
+
+<% else %>  <!-- invitation to person not yet know to epet -->
+
+    <p>Hello from ePetfolio</p>
+    
+    <p><%= @current_user.person.pets.all.map{|p| p.name}.join(', ') %> & <%= @current_user.email %> 
+        would like to invite you to join their Family & Friends network on ePetfolio
+    </p>
+    <p>
+        <%= link_to "Click here to accept - you'll be asked to choose a password", 
+                "#{root_url}email_invite?id=#{@invitation.verify_email_token}" %>
+    </p>
+    <p>You will be able to see Doggie Report Cards and pictures of 
+        <%= @current_user.person.pets.all.map{|p| p.name}.join(', ') %>.
+    </p>
+
+
+<% end %>
+
