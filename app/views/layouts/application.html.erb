@@ -60,6 +60,17 @@
                     <%= image_tag "full-banner-ad.png" %>
                 </div>
             </div>
+            <div class="row">
+               <div class="span10">
+                    <% flash.each do |name, msg| %>
+                      <div class="alert alert-<%= name == :notice ? "success" : "error" %>">
+                        <a class="close" data-dismiss="alert">×</a>
+                        <%= msg %>
+                      </div>
+                    <% end %>
+              </div>  <!-- span9 -->
+            </div>  <!-- row -->
+            
             <!-- ~~~~~~~~~~~~~~~~   epet content    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
             <div class="row">
                 <div class="span10">

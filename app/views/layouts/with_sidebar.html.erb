@@ -67,11 +67,7 @@
                  </div>
                  <!-- ~~~~~~~~~~~~~~~~   epet sidebar   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
                  <div class="span2" id="epet_sidebar">
-                     <% if current_user && current_user.person.pets.count > 0 %>
-                         <%= render "shared/sidebar_known_user" %>
-                     <% else %>
-                         <%= render "shared/sidebar_unknown_user" %>
-                     <% end %>
+                     <%= render "shared/person_sidebar_actions" %>
                  </div>
                  
                 <!-- ~~~~~~~~~~~~~~~~   Skyscraper Ad  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->

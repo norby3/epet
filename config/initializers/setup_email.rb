@@ -15,8 +15,8 @@ ActionMailer::Base.smtp_settings = {
 #ActionMailer::Base.default_url_options[:host] = "calm-falls-3515.herokuapp.com"
 #ActionMailer::Base.raise_delivery_errors = true
 
-#require 'development_mail_interceptor' 
-#ActionMailer::Base.register_interceptor(DevelopmentMailInterceptor) if Rails.env.development?
+require 'development_mail_interceptor' 
+ActionMailer::Base.register_interceptor(DevelopmentMailInterceptor) if Rails.env.development?
 
 
 
