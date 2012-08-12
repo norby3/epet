@@ -36,7 +36,7 @@ class PetsController < ApplicationController
     #logger.debug("@person.email = " + @person.email)
 
     @pet = Pet.new
-    @petphoto = @pet.petphotos.build
+    #@petphoto = @pet.petphotos.build
 
     respond_to do |format|
       format.html # new.html.erb
