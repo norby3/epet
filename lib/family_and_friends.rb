@@ -10,8 +10,8 @@ module FamilyAndFriends
 
     def check_peep_connection
         # look in session for invitation
-        if session[:i_id]
-            @invitation = Invitation.find(session[:i_id])
+        if !session[:i_id].blank?
+            @invitation = Invitation.find(session[:i_id].to_i)
             # if exists, and not a sign up request, then create connection 
             # create the person_connection
             if !@invitation.email.eql?(@invitation.requestor_email)
