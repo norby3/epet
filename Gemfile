@@ -48,7 +48,8 @@ gem 'bcrypt-ruby', '~> 3.0.0'
 
 gem 'simple_form'
 gem "rmagick"
-gem "carrierwave"
+gem 'fog'
+gem 'carrierwave'
 
 gem 'geocoder'
 gem 'simple_form'
