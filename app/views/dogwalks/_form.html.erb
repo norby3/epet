@@ -71,7 +71,7 @@
                 <% if @dogwalk.petphoto.blank? %>
                     <%= image_tag "no-photo-200x200.png" %>
                 <% else %>
-                    <%= image_tag "https://s3.amazonaws.com/epetfolio/#{@dogwalk.petphoto.image_url(:twosixtybyoneeighty)}" %>
+                    <%= image_tag @dogwalk.petphoto.image_url(:twosixtybyoneeighty) %>
                 <% end %>                
             </div>
             <div class="span1">
