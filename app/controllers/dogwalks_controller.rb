@@ -38,6 +38,9 @@ class DogwalksController < ApplicationController
   def edit
     @dogwalk = Dogwalk.find(params[:id])
     @pet = @dogwalk.pet
+    if @dogwalk.petphoto.blank?
+        @dogwalk.build_petphoto
+    end
   end
 
   # POST /dogwalks
