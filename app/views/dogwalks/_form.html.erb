@@ -68,11 +68,12 @@
         <!-- ~~~~~~~~~~~    Extras - Dogwalk Session Photo  ~~~~~~~~~~~~~~~~~~~ -->
         <div class="row top_border2">
             <div class="span3">
-                <% if @dogwalk.petphoto.blank? %>
-                    <%= image_tag "no-photo-200x200.png" %>
-                <% else %>
-                    <%= image_tag @dogwalk.petphoto.image_url(:twosixtybyoneeighty) %>
-                <% end %>                
+                <%= image_tag "no-photo-200x200.png" %>
+                <!-- < % if @dogwalk.petphoto.blank? %>
+                    < %= image_tag "no-photo-200x200.png" %>
+                < % else %>
+                    < %= image_tag @dogwalk.petphoto.image_url(:twosixtybyoneeighty) %>
+                < % end %>                 -->
             </div>
             <div class="span1">
                 <%= f.fields_for :petphoto do |pic| %>
