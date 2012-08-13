@@ -16,8 +16,7 @@
                 </tr>
             <% end %>
         <% end %>
-    
-        <% @recent_walks = pet.dogwalks.where(:status => 'done').order(:updated_at => 'desc').limit(5) %>
+        <% @recent_walks = pet.dogwalks.where(:status => 'done').order("updated_at DESC").limit(5) %>
     
         <% if @recent_walks.count > 0 %>
             <% @recent_walks.each do |r_dogwalk| %>
