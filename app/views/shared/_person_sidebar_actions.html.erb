@@ -39,7 +39,7 @@
 
 <!-- loop thru caretakers??  -->
 <div class="sidebar_header">My F&F Pet Actions</div>
-<% current_user.familyandfriends.each do |ff| %>
+<% current_user.person.familyandfriends.each do |ff| %>
     <% ff.pets.each do |ffpet| %>
         <%= ff.email %> / <%= pet.name %>
     <% end %>
