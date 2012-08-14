@@ -41,7 +41,9 @@
 <div class="sidebar_header">My F&F Pet Actions</div>
 <% current_user.person.familyandfriends.each do |ff| %>
     <% ff.pets.each do |ffpet| %>
-        <%= ff.email %> / <%= ffpet.name %>
+        <!-- < %= ff.email %> / < %= ffpet.name %> -->
+         <%= link_to "Start<br />#{ffpet.name}<br />Dogwalk".html_safe, 
+                 new_dogwalk_path(:pet_id => ffpet.id), :class => "btn btn-primary" %>
     <% end %>
 <% end %>
 
