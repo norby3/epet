@@ -7,6 +7,7 @@
 
 <!--  ~~~~~~~~~~~  Photo Dropzones  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
 <!-- for each pet owned or f&f pet, add a photo drop area -->
+<!-- for now, just a button not a dropzone -->
 <% current_user.person.pets.each do |pet| %>
     <div class="row sidebar_row">
         <div class="span2">
@@ -37,4 +38,22 @@
 <% end %>
 
 <!-- loop thru caretakers??  -->
+<div class="sidebar_header">My F&F Pet Actions</div>
+<% current_user.familyandfriends.each do |ff| %>
+    <% ff.pets.each do |ffpet| %>
+        <%= ff.email %> / <%= pet.name %>
+    <% end %>
+<% end %>
+
+
+
+
+
+
+
+
+
+
+
+
 
