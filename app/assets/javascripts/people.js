@@ -2,7 +2,7 @@
 
 $(document).ready(function() {
 
-    $('.carousel').carousel({
+    $('#myCarousel').carousel({
       interval: 5000
     })
 

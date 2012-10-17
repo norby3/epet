@@ -6,6 +6,28 @@
 footer {
     margin-top: 2em;
 }
+#splash_carousel {
+    margin: 20px 0;
+}
+#login_link {
+    margin-left: 20px;
+}
+#avoid_dw_scams {
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    padding: 0.5em;
+    text-align: center;
+    background: #61377E;
+    color: white;    
+}
+.avoid {
+    font-size: 150%;
+}
+.pdf_link {
+    text-align: center;
+    margin-left: 100px;
+}
 .vertical_line {
     border-bottom: 1px dashed #8339EA;   /*  #F2F2F2;  */
     margin: 5px 0;
@@ -76,7 +98,8 @@ footer {
     height: 200px;
 }
 .splash_row {
-    margin-bottom: 1em;
+/*    margin-bottom: 1em;*/
+    margin-bottom: 5px;
 }
 .green-bold-font {
     color: green;
@@ -176,7 +199,10 @@ footer {
     font-weight: bold;
     text-align: center;
 }
-
+.small_gray_text {
+    font-size: smaller;
+    color: silver;
+}
 
 
 

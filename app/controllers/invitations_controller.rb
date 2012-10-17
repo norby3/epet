@@ -139,4 +139,46 @@ class InvitationsController < ApplicationController
       format.json { head :no_content }
     end
   end
+  
+  def family_friends_mobile 
+    @person = Person.find(params[:person_id])
+    # view will have access to person_connections
+    @invitations = Invitation.where(:requestor_email => @person.email, :status => 'invited')
+    render :layout => false
+  end
+
+  def create_mobile 
+      logger.debug("create_mobile start")
+      
+      @invitation = Invitation.new(params[:invitation])
+      # work around: setting the device's unique user id (uuid) to ip_address
+      @invitation.verify_email_sent_at = Time.zone.now
+
+      @known_user_being_invited = User.where(:email => params[:invitation][:email], :status => 'active').first
+      if @known_user_being_invited
+          @invitation.existing_user = 'true' 
+      else 
+          @invitation.existing_user = 'false'
+      end
+
+      # check for duplicate
+      @duplicate = Invitation.where(:email => params[:invitation][:email], :requestor_email => @invitation.requestor_email).first
+      if @duplicate
+          @duplicate.request_count += 1
+          @duplicate.save
+          UserMailer.mobile_invitation_confirmation(@invitation.requestor_email, @duplicate).deliver if @duplicate.request_count < 3
+          #redirect_to person_path(current_user.person.id), :notice => "Duplicate Invite"
+      elsif @invitation.save
+          UserMailer.mobile_invitation_confirmation(@invitation.requestor_email, @invitation).deliver
+      end
+
+      head :created
+      logger.debug("create_mobile end")
+  end
+
+
 end
+
+
+
+

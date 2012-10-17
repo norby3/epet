@@ -1,6 +1,33 @@
 Epet5::Application.routes.draw do
 
-  resources :dogwalks
+  # mobile API Pet Owner - ajax requests from jquery-mobile forms
+  match "verify_email_mobile_user" => "people#verify_email_mobile"
+  #post "device_app_init" => "users#create_mobile"
+  post "new_mobile_user" => "people#create_mobile"
+  
+  get "checkForMobileUserUpdates" => "people#mobile_user_updates"
+
+  get "report_cards" => "dogwalks#dogwalks_mobile"
+  match "dogwalk_mobile/:id" => "dogwalks#show_mobile"
+
+  get "mobile_photo_gallery" => "petphotos#mobile_photo_gallery"
+  get "measure/hop"
+  get "family_friends" => "invitations#family_friends_mobile"
+  post "ff_invite" => "invitations#create_mobile"
+  
+  #match "mperson" => "people#show2"
+  match "mperson" => "people#show3"
+  #match "/people/:auth_token" => "people#show2"
+  match "hop" => "measure#hop"
+  
+  match "mobile_pets" => "pets#mobile_pets_list"
+  match "mobile_pet" => "pets#mobile_pet"
+
+#  post "add_pet" => ""
+
+  resources :dogwalks do
+    resources :petphotos
+  end
 
   get "person_connection/create"
 

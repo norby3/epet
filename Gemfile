@@ -47,10 +47,12 @@ gem 'bcrypt-ruby', '~> 3.0.0'
 # gem 'ruby-debug19', :require => 'ruby-debug'
 
 gem 'simple_form'
-gem "rmagick"
-gem 'fog'
-gem 'carrierwave'
+# gem "rmagick"
+# gem 'fog'
+# gem 'carrierwave'
 
 gem 'geocoder'
 gem 'simple_form'
 gem 'possessive'
+# gem 'exifr'  wouldn't read s3 jpg files...
+

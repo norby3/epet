@@ -168,4 +168,12 @@ $(document).ready(function(){
 
     });
     
+    $("#dogwalk_stopwatch_container").on('click', '#finished', function() {
+        alert("finished clicked");
+        // if ( $("#dogwalk_start_as_millis").val() != "")  {
+        //     alert("need to stop the stopwatch");
+        // }
+        return false;
+    });
+    
 });     // end jquery document ready

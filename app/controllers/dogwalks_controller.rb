@@ -52,7 +52,8 @@ class DogwalksController < ApplicationController
       if @dogwalk.save
         #format.html { redirect_to @dogwalk, notice: 'Dogwalk was successfully created.' }
         format.html { redirect_to person_path(current_user.person.id), notice: "Dogwalk saved"}
-        format.json { render json: @dogwalk, status: :created, location: @dogwalk }
+        #format.json { render json: @dogwalk, status: :created, location: @dogwalk }
+        format.json { render json: @dogwalk }
       else
         format.html { render action: "new" }
         format.json { render json: @dogwalk.errors, status: :unprocessable_entity }
@@ -93,4 +94,23 @@ class DogwalksController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  # find the pets for the param person
+  # find all the ended dogwalks 
+  def dogwalks_mobile 
+      @person = Person.find(params[:person_id])
+      logger.debug("pets: " + @person.pet_ids.to_s)
+      #@dogwalks = Dogwalk.order("updated_at desc").where(:pet_id => @person.pet_ids, "stop IS NOT NULL")
+      @dogwalks = Dogwalk.order("updated_at desc").where("pet_id = ? AND stop is not null", @person.pet_ids)
+      render :layout => false
+  end
+
+  # show one dogwalk view only for mobile device
+  def show_mobile
+    @dogwalk = Dogwalk.find(params[:id])
+    @dt = Time.parse(@dogwalk.petphoto.image_created_at) if @dogwalk.petphoto.image_created_at
+    render :layout => false
+  end
+  
+  
 end

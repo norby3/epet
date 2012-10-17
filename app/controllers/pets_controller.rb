@@ -53,7 +53,11 @@ class PetsController < ApplicationController
   # POST /pets.json
   def create
     @pet = Pet.new(params[:pet])
-    @person = current_user.person
+    if (params[:person_id])
+        @person= Person.find(params[:person_id])
+    else 
+        @person = current_user.person
+    end
     @pet.caretakers.new(:person_id => @person.id, :primary_role => 'Owner')
 
     #@picture = @pet.picture.new(params[:picture])    
@@ -97,4 +101,30 @@ class PetsController < ApplicationController
       format.json { head :no_content }
     end
   end
+  
+  # call via ajax GET from mobile apps - return a UL list of pets
+  # via erb view, sending back HTML snippet to be inserted into the mobile page
+  def mobile_pets_list
+    @person= Person.find(params[:person_id])
+    @pets = @person.pets
+    
+    # renders views/pets/mobile_pets_list.html.erb
+    render :layout => false
+  end
+  def mobile_pet
+    #@pet = Pet.includes(:petphotos).find(params[:pet_id]).order("petphotos.created_at DESC").first
+    @pet = Pet.includes(:petphotos).find(params[:pet_id])
+
+    if (@pet.petphotos.length > 0)
+      logger.debug("image = " + @pet.petphotos[0].image)
+    end 
+    
+    # renders views/pets/mobile_pet.html.erb
+    render :layout => false
+  end
+  
 end
+
+
+
+

@@ -34,20 +34,14 @@
               <a class="brand" href="/">ePetfolio <%= image_tag "daschund-logo-small.png" %></a> 
               <div class="container nav-collapse">
                 <ul class="nav">
-                  <li><%= link_to "Start Dog Walk", "/path1" %></li>
-                  <li><%= link_to "Pets", pets_path  %></li>
-                  <li><%= link_to "Family & Friends", "/path3"  %></li>
-                  <li><%= link_to "Pros", "/path3"  %></li>
-  
-                  <% if current_user %>
-                    <li><%= link_to current_user.email, edit_person_path(current_user.person) %></li>
-                    <li><%= link_to "Logout", logout_path %></li>
-                  <% else %>
-                    <li><%= link_to "Sign up", signup_path %></li>
-                    <li><%= link_to "Login", login_path %></li>
-                  <% end %>
-
+                    <li><%= link_to "Login", login_path, :id => "login_link" %></li>
+                    <li><a href="#" class="pdf_link">
+                        <span class="avoid">Avoid Dog Walker Scams</span><br /><br />
+                        Click here to read our free guide</a>
+                    </li>
                 </ul>
+              
+
               </div><!--/.nav-collapse -->
             </div>
         </div>
@@ -86,6 +80,16 @@
         <footer>
             <p>&copy; ePetfolio LLC 2012</p>
         </footer>
+        <% if Rails.env.development? %>
+            <div class="row">
+                <div class="span10">
+                    <h5>Development Environment Debug Info</h5>
+                    <p>cookie[:auth_token] = <%= cookies[:auth_token] %></p>
+                    <!-- <p><%= params.to_yaml %></p> -->
+                    <p><%= debug(params) %></p>
+                </div>
+            </div>
+        <% end %>
     </div> <!-- /container -->
 
     <!-- Javascripts

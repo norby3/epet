@@ -1,8 +1,8 @@
 class CreatePetphotos < ActiveRecord::Migration
   def change
     create_table :petphotos do |t|
-        t.integer :pet_id
-        t.integer :dogwalk_id
+      t.integer :pet_id
+      t.integer :dogwalk_id
       t.string :image
       t.string :address
       t.float :latitude

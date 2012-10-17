@@ -2,6 +2,7 @@ class CreatePeople < ActiveRecord::Migration
   def change
     create_table :people do |t|
       t.integer :user_id
+      t.string :upid
       t.string :first_name
       t.string :last_name
       t.string :email
@@ -14,6 +15,8 @@ class CreatePeople < ActiveRecord::Migration
       t.string :timezone
       t.string :country
       t.string :personas
+      t.string :num_pets_owned        
+      t.string :comments
       t.string :status, :default => 'active'
       t.string :updated_by
 

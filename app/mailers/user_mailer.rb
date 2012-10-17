@@ -1,7 +1,6 @@
 class UserMailer < ActionMailer::Base
     default from: "norby@epetfolio.com"
 
-
     def signup_confirmation(signup)
         @signup = signup
         
@@ -12,6 +11,17 @@ class UserMailer < ActionMailer::Base
         @current_user = current_user
         @invitation = invitation
         mail to: invitation.email, :subject => "ePetfolio eMail Confirmation"
+    end
+
+    def mobile_invitation_confirmation(current_user, invitation)
+        @requestor_email = current_user
+        @invitation = invitation
+        mail to: invitation.email, :subject => "ePetfolio Invitation"
+    end
+
+    def verify_email_mobile_user(person)
+        @person = person
+        mail to: @person.email, :subject => "ePetfolio Email Verification"
     end
 
 

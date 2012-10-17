@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120806225809) do
+ActiveRecord::Schema.define(:version => 20120914013046) do
 
   create_table "addresses", :force => true do |t|
     t.string   "line1"
@@ -33,9 +33,9 @@ ActiveRecord::Schema.define(:version => 20120806225809) do
   end
 
   create_table "caretakers", :force => true do |t|
-    t.string   "pet_id"
-    t.string   "person_id"
-    t.string   "organization_id"
+    t.integer  "pet_id"
+    t.integer  "person_id"
+    t.integer  "organization_id"
     t.string   "primary_role"
     t.string   "secondary_role"
     t.string   "started_at"
@@ -43,6 +43,17 @@ ActiveRecord::Schema.define(:version => 20120806225809) do
     t.string   "status",          :default => "active"
     t.datetime "created_at",                            :null => false
     t.datetime "updated_at",                            :null => false
+  end
+
+  create_table "devices", :force => true do |t|
+    t.integer  "person_id"
+    t.string   "name"
+    t.string   "cordova"
+    t.string   "platform"
+    t.string   "uuid"
+    t.string   "version"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "dogwalks", :force => true do |t|
@@ -61,13 +72,30 @@ ActiveRecord::Schema.define(:version => 20120806225809) do
     t.string   "time_elapsed"
     t.string   "timezone"
     t.string   "status",          :default => "active"
-    t.integer  "petphoto_id"
     t.datetime "created_at",                            :null => false
     t.datetime "updated_at",                            :null => false
   end
 
   add_index "dogwalks", ["person_id"], :name => "index_dogwalks_on_person_id"
   add_index "dogwalks", ["pet_id"], :name => "index_dogwalks_on_pet_id"
+
+  create_table "hops", :force => true do |t|
+    t.string   "upid"
+    t.string   "email"
+    t.string   "name"
+    t.string   "cordova"
+    t.string   "platform"
+    t.string   "uuid"
+    t.string   "version"
+    t.string   "page"
+    t.string   "prev_page"
+    t.string   "ip"
+    t.string   "net_connection"
+    t.string   "network"
+    t.string   "timestamp"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
 
   create_table "invitations", :force => true do |t|
     t.string   "email"
@@ -84,7 +112,8 @@ ActiveRecord::Schema.define(:version => 20120806225809) do
   end
 
   create_table "people", :force => true do |t|
-    t.string   "user_id"
+    t.integer  "user_id"
+    t.string   "upid"
     t.string   "first_name"
     t.string   "last_name"
     t.string   "email"
@@ -97,10 +126,12 @@ ActiveRecord::Schema.define(:version => 20120806225809) do
     t.string   "timezone"
     t.string   "country"
     t.string   "personas"
-    t.string   "status",       :default => "active"
+    t.string   "num_pets_owned"
+    t.string   "comments"
+    t.string   "status",         :default => "active"
     t.string   "updated_by"
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
   end
 
   create_table "person_connections", :force => true do |t|
@@ -144,7 +175,7 @@ ActiveRecord::Schema.define(:version => 20120806225809) do
     t.string   "name"
     t.string   "gender"
     t.string   "breed"
-    t.string   "birthdate"
+    t.date     "birthdate"
     t.string   "weight"
     t.string   "status",     :default => "active"
     t.datetime "created_at",                       :null => false

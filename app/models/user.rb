@@ -1,5 +1,7 @@
 class User < ActiveRecord::Base
-
+    #attr_accessible :email, :password, :password_confirmation, :timezone
+    attr_accessor :timezone
+    
     has_one :person
     has_secure_password
     validates_presence_of :email, :password, :password_confirmation
@@ -33,9 +35,12 @@ class User < ActiveRecord::Base
     end
     
     def create_corresponding_person
-        @person = self.create_person(:user_id => self.id.to_i, :email => self.email)
+        @person = self.create_person(:user_id => self.id.to_i, :email => self.email, :timezone => self.timezone)
     end
-    
+
+    def as_json(options={})
+      super(:only => [:email, :auth_token])
+    end
 end
 
 

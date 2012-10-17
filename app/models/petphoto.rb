@@ -2,9 +2,9 @@ class Petphoto < ActiveRecord::Base
 
     belongs_to :pet
     belongs_to :dogwalk
-    mount_uploader :image, ImageUploader
+#    mount_uploader :image, ImageUploader
 
-    before_save :extract_exif_data
+#    before_save :extract_exif_data
 
     def extract_exif_data
         #if !self.address.blank? && !self.latitude.blank? && !self.longitude.blank? 

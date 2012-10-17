@@ -23,6 +23,10 @@
         <div class="span1">
             <p class="btn btn-success" id="stopwatch_multi_button">Start</p>
         </div>
+        <div class="span1">
+            <p class="small_gray_text" id="">Stopwatch</p>
+        </div>
+
     </div>
 
     <!--  ~~~~~~~~~~~~~~~~~~~~~~~~~  Basic Dogwalk Fields  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -87,7 +91,7 @@
     <div class="form-actions">
         <!-- < %= f.submit nil, :class => 'btn btn-primary' %> -->
         <%= f.submit "Save", :class => 'btn btn-primary' %>
-        <%= f.submit "Finished Dogwalk", :name => "save_send_button", :class => 'btn btn-primary' %>
+        <%= f.submit "Notify Owner", :name => "save_send_button", :class => 'btn btn-primary', :id => "finished" %>
         <!-- < %= link_to "Save & Send", "/foo-send-path/#{@client.id}", :class => 'btn btn-primary' %> -->
         <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
                  person_path(current_user.person.id), :class => 'btn' %>

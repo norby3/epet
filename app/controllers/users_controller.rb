@@ -1,7 +1,14 @@
 class UsersController < ApplicationController
 
+    respond_to :html, :json
+    
     def new
-        @user = User.new :email => params[:email]
+        if (params[:email])
+            @user = User.new :email => params[:email]
+        else 
+            @user = User.new
+        end
+        respond_with(@user)
     end
   
     def create
@@ -38,5 +45,24 @@ class UsersController < ApplicationController
           render :edit
         end
     end
+    # mobile API ajax requests
+    # create user, person, session?
+    # json response
+    def create_mobile
+        @user = User.new(params[:user])
+        @user.timezone = params[:timezone]
+        if @user.save
+            #render :json => @user
+            respond_with(@user)
+        else 
+            logger.debug("errror creating user in API")
+        end
+    end
 end
+
+
+
+
+
+
 
