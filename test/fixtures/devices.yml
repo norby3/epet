@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  people_id: 1
+  name: MyString
+  cordova: MyString
+  platform: MyString
+  uuid: MyString
+  version: MyString
+
+two:
+  people_id: 1
+  name: MyString
+  cordova: MyString
+  platform: MyString
+  uuid: MyString
+  version: MyString

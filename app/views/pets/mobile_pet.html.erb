@@ -1,0 +1,30 @@
+<table>
+	<tr>
+		<td class="tlabel">Name</td>
+		<td class="tvalue"><%= @pet.name %></td>
+	</tr>
+    <tr>
+		<td class="tlabel">Breed</td>
+		<td class="tvalue"><%= @pet.breed %></td>
+	</tr>
+	<tr>
+		<td class="tlabel">Gender</td>
+		<td class="tvalue"><%= @pet.gender %></td>
+	</tr>
+	<tr>
+		<td class="tlabel">Birthdate</td>
+		<td class="tvalue"><%= @pet.birthdate %></td>
+	</tr>
+	<tr>
+		<td class="tlabel">Weight</td>
+		<td class="tvalue"><%= @pet.weight %></td>
+	</tr>
+</table>
+<hr />
+<div class="subheading">Photo</div>
+<% if (@pet.petphotos.length > 0) %>
+  <img id="petProfileImage" src="https://s3.amazonaws.com/epetfolio/uploads/petphotos/<%= @pet.petphotos[0].image %>" />
+<% else %>
+  <img id="petProfileImage" src="" />
+<% end %>
+<hr />

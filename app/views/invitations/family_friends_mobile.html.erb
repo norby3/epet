@@ -1,0 +1,24 @@
+
+<ul data-role="listview" id="myfflistview">
+	<li data-role="list-divider">Family & Friends</li>	
+	<% if @person.familyandfriends.empty? %>
+		<li></li>
+	<% else %>
+		<% @person.familyandfriends.each do |ff| %>
+			<li><a href="#" name="ffDetailsLink" id="<%= ff.id %>"><%= ff.email %></a></li>
+		<% end %>
+	<% end %>
+	
+	<li data-role="list-divider">Invited</li>
+	<% if @invitations.empty? %>
+		<li></li>
+	<% else %>	
+		<% @invitations.each do |invite| %>
+			<li><a href="#" name="inviteDetailsLink"><%= invite.email %></a></li>
+		<% end %>
+	<% end %>
+</ul>
+
+
+
+

@@ -1,0 +1,31 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  upid: MyString
+  email: MyString
+  name: MyString
+  cordova: MyString
+  platform: MyString
+  uuid: MyString
+  version: MyString
+  page: MyString
+  prev_page: MyString
+  ip: MyString
+  connection: MyString
+  network: MyString
+  timestamp: MyString
+
+two:
+  upid: MyString
+  email: MyString
+  name: MyString
+  cordova: MyString
+  platform: MyString
+  uuid: MyString
+  version: MyString
+  page: MyString
+  prev_page: MyString
+  ip: MyString
+  connection: MyString
+  network: MyString
+  timestamp: MyString

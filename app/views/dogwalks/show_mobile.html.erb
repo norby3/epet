@@ -1,0 +1,112 @@
+
+<h3><%= @dogwalk.pet.name.possessive %> Dog Walk Report Card</h3>
+<table>
+  <tbody>
+  <tr>
+    <td class="tlabel">Dog walker:</th>
+	<% if !@dogwalk.person.first_name.blank? %>
+        <td><%= @dogwalk.person.first_name %></td>
+    <% else %>
+    	<td><%= @dogwalk.person.email %></td>
+    <% end %>
+  </tr>
+  <tr>
+    <td class="tlabel">Date:</th>
+    <td><%= @dogwalk.start.in_time_zone(@dogwalk.timezone).strftime("%a %b %d") %></td>
+  </tr>
+  <tr>
+    <td class="tlabel">Pee:</th>
+    <td><%= @dogwalk.pee %></td>
+  </tr>
+  <tr>
+    <td class="tlabel">Poo:</th>
+    <td><%= @dogwalk.poo %></td>
+  </tr>
+  <tr>
+    <td class="tlabel">Water:</th>
+    <td><%= @dogwalk.water %></td>
+  </tr>
+  <tr>
+    <td class="tlabel">Treat:</th>
+    <td><%= @dogwalk.treat %></td>
+  </tr>
+  <tr>
+    <td class="tlabel">Start:</th>
+    <td><%= @dogwalk.start.in_time_zone(@dogwalk.timezone).strftime("%I:%M %p %Z") %></td>
+  </tr>
+  <tr>
+    <td class="tlabel">End:</th>
+    <td><%= @dogwalk.stop.in_time_zone(@dogwalk.timezone).strftime("%I:%M %p %Z") %></td>
+  </tr>
+  <tr>
+    <td class="tlabel">Total:</th>
+    <td><%= @dogwalk.time_elapsed %></td>
+  </tr>
+  </tbody>
+</table>
+<p>Comments: <%= @dogwalk.comments %></p>
+<hr />
+<% if @dogwalk.petphoto %>
+	<h3>Dog Walk Photo</h3>
+	<div id="dogwalk_photo_area">
+	   	<img src="https://s3.amazonaws.com/epetfolio/uploads/dogwalks/<%= @dogwalk.petphoto.image %>" >
+	</div>
+	<h3>Photo's GPS Data</h3>
+	<table>
+	  <tbody>
+		<!-- < % if !@dogwalk.petphoto.image_created_at.blank? %> -->
+		<% if @dt %>
+		  <tr>
+		    <td class="tlabel">Date:</th>
+		    <!-- <td>< %= @dogwalk.petphoto.image_created_at.strftime("%a %b %d %I:%M%P %Z") %></td> -->
+			<!-- <td>< %= @dogwalk.petphoto.image_created_at %></td> -->
+			<td><%= @dt.strftime("%a %b %d") %></td>
+		  </tr>
+		  <tr>
+		    <td class="tlabel">Time:</th>
+		    <!-- <td>< %= @dogwalk.petphoto.image_created_at.strftime("%a %b %d %I:%M%P %Z") %></td> -->
+			<td><%= @dt.strftime("%I:%M%P %Z") %></td>
+		  </tr>
+		<% end %>
+		<% if @dogwalk.petphoto.address %>
+		  <tr>
+		    <td class="tlabel">Address:</th>
+		    <td><%= @dogwalk.petphoto.address %></td>
+		  </tr>
+		<% end %>
+		<% if @dogwalk.petphoto.latitude %>
+		  <tr>
+		    <td class="tlabel">Latitude:</th>
+		    <td id="dogwalk_view_petphoto_lat"><%= @dogwalk.petphoto.latitude %></td>
+		  </tr>
+		<% end %>
+		<% if @dogwalk.petphoto.longitude %>
+		  <tr>
+		    <td class="tlabel">Longitude:</th>
+		    <td id="dogwalk_view_petphoto_lng"><%= @dogwalk.petphoto.longitude %></td>
+		  </tr>
+		<% end %>
+		<% if @dogwalk.petphoto.altitude %>
+		  <tr>
+		    <td class="tlabel">Altitude:</th>
+		    <td><%= @dogwalk.petphoto.altitude %></td>
+		  </tr>
+		<% end %>
+	</table>
+	<% if @dogwalk.petphoto.latitude && @dogwalk.petphoto.longitude %>
+		<!--  map location of dogwalk photo  -->
+		<h3>Dog Walk Photo Location</h3>
+		<div id="map_canvas"></div>
+		<hr />
+	<% else %>
+		<p>Dog walk photo does not have geolocation data latitude and longitude.</p>
+	<% end %>
+
+<% else %>
+  <p>No dog walk photo :-( </p>
+<% end %>
+
+
+
+
+
