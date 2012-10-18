@@ -51,7 +51,6 @@ class PetphotosController < ApplicationController
         @photos << "img/07.png"
         @photos << "img/08.png"
         @photos << "img/09.png"
-        
         render :layout => false
     end
 

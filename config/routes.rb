@@ -4,7 +4,6 @@ Epet5::Application.routes.draw do
   match "verify_email_mobile_user" => "people#verify_email_mobile"
   #post "device_app_init" => "users#create_mobile"
   post "new_mobile_user" => "people#create_mobile"
-  
   get "checkForMobileUserUpdates" => "people#mobile_user_updates"
 
   get "report_cards" => "dogwalks#dogwalks_mobile"
