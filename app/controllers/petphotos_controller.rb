@@ -38,9 +38,20 @@ class PetphotosController < ApplicationController
     def mobile_photo_gallery
         @person = Person.new(params[:person_id])
         @photos = []
-        @photos << "861F897A-43F2-41AF-AAD6-B55BA324E7A3-20120925035426.jpg"
-        @photos << "861F897A-43F2-41AF-AAD6-B55BA324E7A3-20120926102340.jpg"
-        @photos << "861F897A-43F2-41AF-AAD6-B55BA324E7A3-20120926105814.jpg"
+        # @photos << "861F897A-43F2-41AF-AAD6-B55BA324E7A3-20120925035426.jpg"
+        # @photos << "861F897A-43F2-41AF-AAD6-B55BA324E7A3-20120926102340.jpg"
+        # @photos << "861F897A-43F2-41AF-AAD6-B55BA324E7A3-20120926105814.jpg"
+        @photos << "img/00.png"
+        @photos << "img/01.png"
+        @photos << "img/02.png"
+        @photos << "img/03.png"
+        @photos << "img/04.png"
+        @photos << "img/05.png"
+        @photos << "img/06.png"
+        @photos << "img/07.png"
+        @photos << "img/08.png"
+        @photos << "img/09.png"
+        
         render :layout => false
     end
 
