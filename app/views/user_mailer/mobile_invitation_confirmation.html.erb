@@ -3,9 +3,8 @@
 <p>Hello from ePetfolio</p>
 <p>You have been invited to join <%= @requestor_email %>'s Family & Friends network on ePetfolio</p>
 
-<p>
-    <%= link_to "Click here to accept", 
-             "#{root_url}email_invite?id=#{@invitation.verify_email_token}"  %>
-</p>
 
+<br />
+<%= link_to "Accept ePetfolio Invitation", "#{root_url}friendsfamily/#{@invitation.verify_email_token}" %>
+<br /><br />
 

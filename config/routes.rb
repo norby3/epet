@@ -1,5 +1,15 @@
 Epet5::Application.routes.draw do
 
+  # trying to setup redirect to open the mobile app
+  # the operating system should see PetOwner:// and then want to open PetOwneriOS
+  match "friendsfamily/:token" => redirect("PetOwner://epetfolio/%{token}")
+
+  # these did not work...
+  #  match "friendsfamily/:verify_email_token" => redirect {|params| "PetOwner://#{params[:verify_email_token]}" }
+  #match "friendsfamily/:token" => redirect("PetOwner://#{token}")
+  #match "friendsfamily/:token" => redirect {|params| "PetOwner://epetfolio/#{params[:token]}" }
+  #match "friendsfamily/:token" => redirect( url_for("PetOwner://epetfolio/%{token}", :port => nil) )
+
   # mobile API Pet Owner - ajax requests from jquery-mobile forms
   match "verify_email_mobile_user" => "people#verify_email_mobile"
   #post "device_app_init" => "users#create_mobile"
