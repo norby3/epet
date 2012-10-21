@@ -94,7 +94,17 @@ class PeopleController < ApplicationController
       render json: @person.errors, status: :unprocessable_entity
     end
   end
-
+  
+  # ajax json POST request - called by js function initInvitedFamilyFriend()
+  # this is a kind of special multi-model create b/c the person has been invited
+  # called by mobile device - this user was invited by f&f to join
+  # they have clicked a custom URL in the email invitation
+  # lot to do here: create Person, Device, Caretaker, Person_Connection, update Invitation,
+  # status = "active mobile"
+  # expecting: Invitation.verify_email_token, all Device fields
+  def create_invited_mobile_user 
+    
+  end
 
   # PUT /people/1
   # PUT /people/1.json

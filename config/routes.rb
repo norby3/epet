@@ -1,5 +1,7 @@
 Epet5::Application.routes.draw do
 
+  post "create_invited_mobile_user" => "people#create_invited_mobile_user"
+
   # trying to setup redirect to open the mobile app
   # the operating system should see PetOwner:// and then want to open PetOwneriOS
   match "friendsfamily/:token" => redirect("PetOwner://epetfolio/%{token}")
