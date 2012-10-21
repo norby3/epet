@@ -1,6 +1,5 @@
 class UserMailer < ActionMailer::Base
     default from: "norby@epetfolio.com"
-    require 'open-uri'
 
     def signup_confirmation(signup)
         @signup = signup
@@ -17,7 +16,6 @@ class UserMailer < ActionMailer::Base
     def mobile_invitation_confirmation(current_user, invitation)
         @requestor_email = current_user
         @invitation = invitation
-        @path = URI::encode("#{root_url}friendsfamily/#{@invitation.email}/#{@invitation.verify_email_token}") 
         mail to: invitation.email, :subject => "ePetfolio Invitation"
     end
 
