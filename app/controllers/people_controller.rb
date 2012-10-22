@@ -113,7 +113,8 @@ class PeopleController < ApplicationController
      @person_a = Person.find_by_email(@invitation.requestor_email)
      #  create the person & device
      @person = Person.new
-     @person.email = params[:email]
+     @person.email = @invitation.email
+     @person.timezone = params[:timezone]
      @person.status = "active mobile"
      puts "create_invited_mobile_user - next step is devices build "
      @person.devices.build(params[:device])
