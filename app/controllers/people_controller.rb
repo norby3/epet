@@ -103,7 +103,38 @@ class PeopleController < ApplicationController
   # status = "active mobile"
   # expecting: Invitation.verify_email_token, all Device fields
   def create_invited_mobile_user 
-    
+     puts "create_invited_mobile_user - start"
+     #  find the invitation
+     @invitation = Invitation.find_by_verify_email_token(params[:verify_email_token])
+     #  update the invitation
+     @invitation.update_attributes(:status => "accepted")
+     puts "create_invited_mobile_user - done invitation.update_attributes "
+     
+     @person_a = Person.find_by_email(@invitation.requestor_email).first
+     #  create the person & device
+     @person = Person.new
+     @person.email = params[:email]
+     @person.status = "active mobile"
+     puts "create_invited_mobile_user - next step is devices build "
+     @person.devices.build(params[:device])
+     #  create the person_connection
+     @person.person_connections.build(:person_a_id => @person_a.id, :person_b_id => @person, 
+         :category => @invitation.category, :invitation_id = @invitation.id, :status => 'active')
+     #  create the caretaker(s) loop thru each pet
+     puts "create_invited_mobile_user - next step is pets each "
+     @person_a.pets.each do |pet|
+         @person.caretakers.build(:pet_id => pet.id, :person_id => @person.id, :started_at => Time.now)
+          # t.string :primary_role  t.string :secondary_role
+     end 
+     #  return person as json
+     puts "create_invited_mobile_user - next step is person.save "
+     if @person.save
+       puts "create_invited_mobile_user - save - render end"
+       render json: @person
+     else
+       puts "create_invited_mobile_user - save - error"
+       render json: @person.errors, status: :unprocessable_entity
+     end     
   end
 
   # PUT /people/1
