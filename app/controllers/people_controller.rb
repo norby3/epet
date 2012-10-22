@@ -124,6 +124,7 @@ class PeopleController < ApplicationController
      #  create the caretaker(s) loop thru each pet
      puts "create_invited_mobile_user - next step is pets each "
      @person_a.pets.each do |pet|
+         puts "create_invited_mobile_user - each pet - pet.id = " + pet.id.to_s
          @person.caretakers.build(:pet_id => pet.id, :person_id => @person.id, :started_at => Time.now)
           # t.string :primary_role  t.string :secondary_role
      end 
