@@ -110,7 +110,7 @@ class PeopleController < ApplicationController
      @invitation.update_attributes(:status => "accepted")
      puts "create_invited_mobile_user - done invitation.update_attributes "
      
-     @person_a = Person.find_by_email(@invitation.requestor_email).first
+     @person_a = Person.find_by_email(@invitation.requestor_email)
      #  create the person & device
      @person = Person.new
      @person.email = params[:email]
