@@ -119,7 +119,7 @@ class PeopleController < ApplicationController
      @person.devices.build(params[:device])
      #  create the person_connection
      @person.person_connections.build(:person_a_id => @person_a.id, :person_b_id => @person, 
-         :category => @invitation.category, :invitation_id = @invitation.id, :status => 'active')
+         :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
      #  create the caretaker(s) loop thru each pet
      puts "create_invited_mobile_user - next step is pets each "
      @person_a.pets.each do |pet|
