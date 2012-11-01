@@ -36,21 +36,8 @@ class PetphotosController < ApplicationController
     #  do better
     #  find the best photos to show this pet owner
     def mobile_photo_gallery
-        @person = Person.new(params[:person_id])
-        @photos = []
-        # @photos << "861F897A-43F2-41AF-AAD6-B55BA324E7A3-20120925035426.jpg"
-        # @photos << "861F897A-43F2-41AF-AAD6-B55BA324E7A3-20120926102340.jpg"
-        # @photos << "861F897A-43F2-41AF-AAD6-B55BA324E7A3-20120926105814.jpg"
-        @photos << "img/00.png"
-        @photos << "img/01.png"
-        @photos << "img/02.png"
-        @photos << "img/03.png"
-        @photos << "img/04.png"
-        @photos << "img/05.png"
-        @photos << "img/06.png"
-        @photos << "img/07.png"
-        @photos << "img/08.png"
-        @photos << "img/09.png"
+        # @person = Person.new(params[:person_id])
+        @photos = ['00.png','01.png','02.png','03.png','04.png','05.png','06.png','07.png','08.png','09.png' ]
         render :layout => false
     end
 
@@ -72,5 +59,6 @@ class PetphotosController < ApplicationController
             EXIFR::JPEG.new('enkhuizen.jpg').gps.longitude      # => 5.28397777777778
         end
     end
+    
 end
 

@@ -93,6 +93,7 @@ ActiveRecord::Schema.define(:version => 20120914013046) do
     t.string   "net_connection"
     t.string   "network"
     t.string   "timestamp"
+    t.text     "description"
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
   end

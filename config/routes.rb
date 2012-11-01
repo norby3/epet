@@ -23,6 +23,8 @@ Epet5::Application.routes.draw do
   match "dogwalk_mobile/:id" => "dogwalks#show_mobile"
 
   get "mobile_photo_gallery" => "petphotos#mobile_photo_gallery"
+#  get "avoid_dogwalker_scams" => "petphotos#avoid_dogwalker_scams"   - moved to mobile_user_updates
+
   get "measure/hop"
   get "family_friends" => "invitations#family_friends_mobile"
   post "ff_invite" => "invitations#create_mobile"

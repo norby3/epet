@@ -110,20 +110,20 @@ class PeopleController < ApplicationController
      @invitation.update_attributes(:status => "accepted")
      puts "create_invited_mobile_user - done invitation.update_attributes "
      
-     @person_a = Person.find_by_email(@invitation.requestor_email)
+     @invitor = Person.find_by_email(@invitation.requestor_email)
      #  create the person & device
-     @person = Person.new
+     @person = Person.new(params[:person])
+     @person.first_name = @person.devices[0].name.split(/\b/)[0]
      @person.email = @invitation.email
-     @person.timezone = params[:timezone]
      @person.status = "active mobile"
-     puts "create_invited_mobile_user - next step is devices build "
-     @person.devices.build(params[:device])
-     #  create the person_connection
-     @person.person_connections.build(:person_a_id => @person_a.id, :person_b_id => @person, 
+
+     #  create the first person_connection 
+     @person.person_connections.build(:person_a_id => self, :person_b_id => @invitor.id,
          :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
+
      #  create the caretaker(s) loop thru each pet
      puts "create_invited_mobile_user - next step is pets each "
-     @person_a.pets.each do |pet|
+     @invitor.pets.each do |pet|
          puts "create_invited_mobile_user - each pet - pet.id = " + pet.id.to_s
          @person.caretakers.build(:pet_id => pet.id, :person_id => @person.id, :started_at => Time.now)
           # t.string :primary_role  t.string :secondary_role
@@ -131,6 +131,10 @@ class PeopleController < ApplicationController
      #  return person as json
      puts "create_invited_mobile_user - next step is person.save "
      if @person.save
+       #  create the second person_connection - reverse of previous
+       @invitor.person_connections.build(:person_a_id => self, :person_b_id => @person.id, 
+                :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
+       @invitor.save
        puts "create_invited_mobile_user - save - render end"
        render json: @person
      else
@@ -188,9 +192,58 @@ class PeopleController < ApplicationController
   end
 
   # 1. if the mobile user verified their email - status = "active mobile"
+  #  find all people & pets & related photos
+  # no view or html - returns json 
+  #  list of family email addresses & person.ids  
+  #     @family_emails
+  #  list of friends email addresses & person.ids
+  #     @friends_emails
+  #  list of image file names on s3
+  #     @photos
   def mobile_user_updates
       @person = Person.find_by_upid(params[:id])
-      render json: @person, :layout => false
+
+      # a list of pet_ids where chistine is (f&f) caretaker
+      @pets = Caretaker.where(:person_id => @person.id).uniq.pluck(:pet_id)
+      #logger.debug("@pets = " + @pets.to_s)
+      # the photos for those pets
+      @photos = Petphoto.where(:pet_id => @pets).order("created_at DESC").uniq.pluck(:image)
+      @photos.each_with_index do |p, x|
+        @photos[x] = "petphotos/" + p
+      end
+      #logger.debug("@photos.length = " + @photos.length.to_s + " @photos = " + @photos.to_s)
+      if @photos.length < 12 
+        @photos = fill_photo_array(@photos)
+      end
+      @slides = []
+      1.upto(27) do |n|
+        @slides << n.to_s + ".png"
+      end      
+      render json: {:person => @person, :pets => @pets, :photos => @photos, :adwsg_slides => @slides }, :layout => false
+  end
+  
+  # always want to show bunch of photos
+  # https://s3.amazonaws.com/epetfolio/uploads/sample/00.png
+  def fill_photo_array(pixs)
+      @samples = ['sample/00.png', 'sample/01.png', 'sample/02.png', 'sample/03.png', 'sample/04.png', 'sample/05.png',
+        'sample/06.png', 'sample/07.png', 'sample/08.png', 'sample/09.png', 'sample/10.png', 'sample/11.png', 'sample/12.png'
+        ]
+      @pixs = Array.new()
+      0.upto(11) do |i|
+          if pixs[i].blank? 
+            @pixs <<  @samples[(0..11).to_a.sample]
+          else 
+            @pixs << pixs[i]
+          end
+          #logger.debug("@pixs = " + @pixs.to_s)
+      end
+      return @pixs
   end
 
 end
+
+
+
+
+
+

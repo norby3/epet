@@ -14,6 +14,7 @@ class CreateHops < ActiveRecord::Migration
       t.string :net_connection
       t.string :network
       t.string :timestamp
+      t.text   :description
 
       t.timestamps
     end

@@ -1,23 +1,14 @@
 
 <!--  
   https://s3.amazonaws.com/epetfolio/uploads/petphotos/861F897A-43F2-41AF-AAD6-B55BA324E7A3-20120926105814.jpg
+
+  https://s3.amazonaws.com/epetfolio/uploads/sample/00.png
 -->
-<% s3 = "https://s3.amazonaws.com/epetfolio/uploads/petphotos/" %>
+
+<% s3 = "https://s3.amazonaws.com/epetfolio/uploads/sample/" %>
 <ul class="gallery">
 	<% @photos.each do |pic| %>
-	    <li><a href="<%=s3%><%=pic%>" rel="external"><img src="<%=s3%><%=pic%>" alt="Image 009" /></a></li>	
+	    <li><a href="<%=s3%><%=pic%>" rel="external"><img src="<%=s3%><%=pic%>" /></a></li>
 	<% end %>
-</ul>	
+</ul>
 
-
-<!-- <ul class="gallery">
-	<li><a href="img/full/001.jpg" rel="external"><img src="img/thumb/001.jpg" alt="Image 001" /></a></li>
-	<li><a href="img/full/002.jpg" rel="external"><img src="img/thumb/002.jpg" alt="Image 002" /></a></li>
-	<li><a href="img/full/003.jpg" rel="external"><img src="img/thumb/003.jpg" alt="Image 003" /></a></li>
-	<li><a href="img/full/004.jpg" rel="external"><img src="img/thumb/004.jpg" alt="Image 004" /></a></li>
-	<li><a href="img/full/005.jpg" rel="external"><img src="img/thumb/005.jpg" alt="Image 005" /></a></li>
-	<li><a href="img/full/006.jpg" rel="external"><img src="img/thumb/006.jpg" alt="Image 006" /></a></li>
-	<li><a href="img/full/007.jpg" rel="external"><img src="img/thumb/007.jpg" alt="Image 007" /></a></li>
-	<li><a href="img/full/008.jpg" rel="external"><img src="img/thumb/008.jpg" alt="Image 008" /></a></li>
-	<li><a href="img/full/009.jpg" rel="external"><img src="img/thumb/009.jpg" alt="Image 009" /></a></li>	
-</ul>	 -->
