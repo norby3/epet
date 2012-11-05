@@ -151,7 +151,8 @@ class PeopleController < ApplicationController
     @person = Person.find(params[:id])
     # support for the mobile app "Verify My Email"
     #logger.debug("params[:person][:email] = " + params[:person][:email] + " status = " + @person.status)
-    if params[:person][:email] && @person.status == "new mobile"
+    # if params[:person][:email] && @person.status == "new mobile"
+    if params[:person][:email] && params[:verify_email].eql?('request')
       @person.status = "verifying"
     end
     respond_to do |format|
@@ -176,7 +177,11 @@ class PeopleController < ApplicationController
         @person.status = 'active mobile'
         @person.save 
       end
-      #render html
+      #render html  (first iteration sent to browser page) 
+      # 2nd iteration sends redirect with custom URL PetOwner://?id=token
+      # that should re-open the app - assuming they did these steps from their mobile phone
+      #  routes.rb for similar use case --> redirect("PetOwner://epetfolio/%{token}")
+      redirect_to "PetOwner://epetfolio/email_verified"
   end
 
   # DELETE /people/1
@@ -212,8 +217,17 @@ class PeopleController < ApplicationController
         @photos[x] = "petphotos/" + p
       end
       #logger.debug("@photos.length = " + @photos.length.to_s + " @photos = " + @photos.to_s)
-      if @photos.length < 12 
-        @photos = fill_photo_array(@photos)
+      #if @photos.length < 12 
+        # @photos = fill_photo_array(@photos)
+      #end
+      @samples = ['sample/00.png', 'sample/01.png', 'sample/02.png', 'sample/03.png', 'sample/04.png', 'sample/05.png',
+        'sample/06.png', 'sample/07.png', 'sample/08.png', 'sample/09.png', 'sample/10.png', 'sample/11.png', 'sample/12.png']
+      i = 0
+      while i < 12
+         if @photos[i].blank?
+             @photos[i] = @samples[i]
+         end
+         i += 1
       end
       @slides = []
       1.upto(27) do |n|

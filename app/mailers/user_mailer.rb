@@ -19,6 +19,7 @@ class UserMailer < ActionMailer::Base
         mail to: invitation.email, :subject => "ePetfolio Invitation"
     end
 
+    #  called by Person_Controller.update - mobile app did Verify My Email
     def verify_email_mobile_user(person)
         @person = person
         mail to: @person.email, :subject => "ePetfolio Email Verification"
