@@ -211,8 +211,11 @@ class PeopleController < ApplicationController
       # a list of pet_ids where chistine is (f&f) caretaker
       @pets = Caretaker.where(:person_id => @person.id).uniq.pluck(:pet_id)
       #logger.debug("@pets = " + @pets.to_s)
-      # the photos for those pets
-      @photos = Petphoto.where(:pet_id => @pets).order("created_at DESC").uniq.pluck(:image)
+      @photos = []
+      if @pets.size > 0
+          # the photos for those pets
+          @photos = Petphoto.where(:pet_id => @pets).order("created_at DESC").uniq.pluck(:image)
+      end
       @photos.each_with_index do |p, x|
         @photos[x] = "petphotos/" + p
       end
