@@ -13,11 +13,12 @@ class DogwalksController < ApplicationController
   # GET /dogwalks/1
   # GET /dogwalks/1.json
   def show
-    @dogwalk = Dogwalk.find(params[:id])
+    #@dogwalk = Dogwalk.find(params[:id])
+    @dogwalk = Dogwalk.includes({:pet => :petphotos}).find(params[:id])
     Time.zone = @dogwalk.timezone || 'America/New_York'
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: @dogwalk }
+      format.json { render json: {:dogwalk => @dogwalk, :pet => @dogwalk.pet, :petphoto => @dogwalk.pet.petphotos[0] } }
     end
   end
 
@@ -101,14 +102,16 @@ class DogwalksController < ApplicationController
       @person = Person.find(params[:person_id])
       logger.debug("pets: " + @person.pet_ids.to_s)
       #@dogwalks = Dogwalk.order("updated_at desc").where(:pet_id => @person.pet_ids, "stop IS NOT NULL")
-      @dogwalks = Dogwalk.order("updated_at desc").where("pet_id = ? AND stop is not null", @person.pet_ids)
+      @dogwalks = Dogwalk.order("updated_at desc").where("pet_id IN (?) AND stop is not null", @person.pet_ids)
       render :layout => false
   end
 
   # show one dogwalk view only for mobile device
   def show_mobile
     @dogwalk = Dogwalk.find(params[:id])
-    @dt = Time.parse(@dogwalk.petphoto.image_created_at) if @dogwalk.petphoto.image_created_at
+    if @dogwalk.petphoto && !@dogwalk.petphoto.image_created_at.blank?
+        @dt = Time.parse(@dogwalk.petphoto.image_created_at)
+    end
     render :layout => false
   end
   

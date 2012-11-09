@@ -1,10 +1,16 @@
 <ul data-role="listview" id="mypetslistview">
 	<li data-role="list-divider">My Pets</li>
-	<% @pets.each do |pet| %>
-		<li><a href="#pet" class="petDetailsLink" id="<%= pet.id %>"><%=pet.name %></a></li>
-	<% end %>
+		<% @pets.each do |pet| %>
+			<li><a href="#pet" class="petDetailsLink" id="<%= pet.id %>"><%=pet.name %></a></li>
+		<% end %>
+	    <% if @pets.size == 0 %>
+	        <li> </li>
+	    <% end %>
 
-	<li data-role="list-divider">Family & Friend Pets</li>	
+	<li data-role="list-divider">Family & Friend Pets</li>
+        <li> </li>
+
+		
 </ul>
 
 

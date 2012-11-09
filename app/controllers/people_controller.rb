@@ -235,7 +235,7 @@ class PeopleController < ApplicationController
       @slides = []
       1.upto(27) do |n|
         @slides << n.to_s + ".png"
-      end      
+      end
       render json: {:person => @person, :pets => @pets, :photos => @photos, :adwsg_slides => @slides }, :layout => false
   end
   

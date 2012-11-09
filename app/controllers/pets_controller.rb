@@ -18,11 +18,17 @@ class PetsController < ApplicationController
   # GET /pets/1
   # GET /pets/1.json
   def show
-    @pet = Pet.find(params[:id])
+    #@pet = Pet.find(params[:id])
+    @pet = Pet.includes(:petphotos).find(params[:id])
+
+    if (@pet.petphotos.length > 0)
+      logger.debug("image = " + @pet.petphotos[0].image)
+    end 
 
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: @pet }
+      #format.json { render json: @pet }
+      format.json { render json: {:pet => @pet, :petphoto => @pet.petphotos[0] } }
     end
   end
 
