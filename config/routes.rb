@@ -63,6 +63,7 @@ Epet5::Application.routes.draw do
   get "sessions/new"
 
   get "welcome/index"
+  get "welcome/dwguide"
 
   get "users/new"
 

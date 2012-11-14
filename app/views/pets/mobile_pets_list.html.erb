@@ -8,7 +8,12 @@
 	    <% end %>
 
 	<li data-role="list-divider">Family & Friend Pets</li>
-        <li> </li>
+	    <% @ffpets.each do |ffpet| %>
+			<li><a href="#pet" class="petDetailsLink" id="<%= ffpet.id %>"><%=ffpet.name %></a></li>
+		<% end %>
+	    <% if @ffpets.size == 0 %>
+	        <li> </li>
+	    <% end %>
 
 		
 </ul>

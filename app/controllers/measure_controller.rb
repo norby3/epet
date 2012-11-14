@@ -2,6 +2,9 @@ class MeasureController < ApplicationController
 
   def hop
       @hop = Hop.new(params[:hop])
+      if !request.remote_ip.blank?
+          @hop.ip = request.remote_ip
+      end
       if @hop.save
           #render :json => {"foo" => "bar"}
           render :json => @hop

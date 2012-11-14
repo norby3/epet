@@ -13,9 +13,6 @@
 
     <%= stylesheet_link_tag "application", :media => "all" %>
 
-    <!-- <link href="favicon.ico" rel="shortcut icon"> -->
-    <!-- <link rel="shortcut icon" type="image/png" href="favicon.ico" /> -->
-    <!-- <link rel="shortcut icon" href="twitter-bootstrap-v2/docs/examples/images/favicon.ico">   -->
     <link href="images/apple-touch-icon.png" rel="apple-touch-icon">
     <link href="images/apple-touch-icon-72x72.png" rel="apple-touch-icon" sizes="72x72">
     <link href="images/apple-touch-icon-114x114.png" rel="apple-touch-icon" sizes="114x114">
@@ -25,71 +22,22 @@
     <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
-              <a class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </a>
-              <!-- <a class="brand" href="#">ePetfolio</a> -->
-              <a class="brand" href="/">ePetfolio <%= image_tag "daschund-logo-small.png" %></a> 
-              <div class="container nav-collapse">
-                <ul class="nav">
-                    <li><%= link_to "Login", login_path, :id => "login_link" %></li>
-                    <li><a href="#" class="pdf_link">
-                        <span class="avoid">Avoid Dog Walker Scams</span><br /><br />
-                        Click here to read our free guide</a>
-                    </li>
-                </ul>
-              
-
-              </div><!--/.nav-collapse -->
+              <a class="brand" href="/">e<b>Petfolio</b> <%= image_tag "daschund-logo-small.png" %></a> 
             </div>
         </div>
-    </div>
+    </div>     <!-- navbar -->
     <div class="container">
         <div class="content">
-            <!--  ~~~~~~~~~~~~~~~~   Full Banner Ad    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
-            <div class="row splash_row lightblue">
-                <div class="span12">
-                    <%= image_tag "full-banner-ad.png" %>
-                </div>
-            </div>
-            <div class="row">
-               <div class="span10">
-                    <% flash.each do |name, msg| %>
-                      <div class="alert alert-<%= name == :notice ? "success" : "error" %>">
-                        <a class="close" data-dismiss="alert">×</a>
-                        <%= msg %>
-                      </div>
-                    <% end %>
-              </div>  <!-- span9 -->
-            </div>  <!-- row -->
-            
             <!-- ~~~~~~~~~~~~~~~~   epet content    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
             <div class="row">
-                <div class="span10">
+                <div class="span12">
                    <%= yield %>
                  </div>
-                <!-- ~~~~~~~~~~~~~~~~   Skyscraper Ad  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  -->
-                <div class="span2 silver">
-                    <%= image_tag "skyscraper-ad.png" %>
-                </div>
             </div>  <!-- row -->
         </div><!--/content-->
-
         <footer>
-            <p>&copy; ePetfolio LLC 2012</p>
+            <p>&copy; ePetfolio LLC 2012-13</p>
         </footer>
-        <% if Rails.env.development? %>
-            <div class="row">
-                <div class="span10">
-                    <h5>Development Environment Debug Info</h5>
-                    <p>cookie[:auth_token] = <%= cookies[:auth_token] %></p>
-                    <!-- <p><%= params.to_yaml %></p> -->
-                    <p><%= debug(params) %></p>
-                </div>
-            </div>
-        <% end %>
     </div> <!-- /container -->
 
     <!-- Javascripts

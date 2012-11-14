@@ -1,23 +1,38 @@
 
-
-<div data-role="content">
-    
-    <div id="splash_carousel" class="carousel slide">
-        <div class="carousel-inner">
-          <div class="item active"><%= image_tag "splash_slides/one-1.png" %></div>
-          <div class="item"><%= image_tag "splash_slides/two-1.png" %></div>
-          <div class="item"><%= image_tag "splash_slides/three-1.png" %></div>
-          <div class="item"><%= image_tag "splash_slides/four-1.png" %></div>
-        </div>
-      <!-- Carousel nav -->
-      <a class="carousel-control left" href="#splash_carousel" data-slide="prev">&lsaquo;</a>
-      <a class="carousel-control right" href="#splash_carousel" data-slide="next">&rsaquo;</a>
-    </div>
-    <div class="row">
-        <div class="span6 offset2">
-            <%= render :partial => "shared/signup" %>
+<div data-role="content">	
+	<div class="row">
+		<div class="span12">
+	        <div id="splash-header"><h1>Dog Walk Report Cards</h1>Including Photos Verified By GPS</div>
         </div>
     </div>
+	<div class="row" id="splash-body">
+	    <div class="span3"><%= image_tag "splash_slides/reportcard-1.png" %></div>
+	    <div class="span3"><%= image_tag "splash_slides/reportcard-2.png" %></div>
+	    <div class="span3"><%= image_tag "splash_slides/reportcard-3.png" %></div>
+	    <div class="span3"><%= image_tag "splash_slides/reportcard-4.png" %></div>
+    </div>
 
+    <hr />
+    <div class="row" id="splash-body-two">
+        <div class="span2" id="avoid_dw_scams_div">
+  	        <a href="welcome/dwguide" id="avoid_dw_scams">Avoid<br />Dog Walker<br />Scams<br><span id="freeguide">Free Guide</span></a>
+        </div>
+        <div class="span1">&nbsp;</div>
+        <div class="span2 splash-jewels" >
+  	        iPhone App
+            <a href="#"><%= image_tag "apple-app-store-badge.jpeg" %></a>
+        </div>
+        <div class="span1">&nbsp;</div>
+        <div class="span2 splash-jewels" >
+  	        Android App
+            <a href="#"><%= image_tag "google-play-badge.png" %></a>
+        </div>
+        <div class="span1">&nbsp;</div>
+        <div class="span2 splash-jewels" >
+  	        Blackberry App
+            <a href="#"><%= image_tag "BlackBerry-AppWorldBadge.jpg" %></a>
+        </div>
+
+    </div>
 </div>  <!-- data-role="content" -->
 

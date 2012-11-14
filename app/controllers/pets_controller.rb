@@ -114,6 +114,8 @@ class PetsController < ApplicationController
     @person= Person.find(params[:person_id])
     @pets = @person.pets
     
+    @ffpets = Pet.includes(:caretakers).where("caretakers.primary_role != 'Owner' and caretakers.person_id = ?", params[:person_id])
+    
     # renders views/pets/mobile_pets_list.html.erb
     render :layout => false
   end

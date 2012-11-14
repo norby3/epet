@@ -2,6 +2,9 @@
 /*   #4f2170    */
 
 .our_purple { color: #8339EA; }  
+.silver {
+	background-color: silver;
+}
 
 footer {
     margin-top: 2em;
@@ -12,22 +15,30 @@ footer {
 #login_link {
     margin-left: 20px;
 }
-#avoid_dw_scams {
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
+#avoid_dw_scams_div, .splash-jewels {
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
     padding: 0.5em;
     text-align: center;
-    background: #61377E;
-    color: white;    
+    border: 1px solid #61377E;
 }
-.avoid {
-    font-size: 150%;
+.splash-jewels {
+/*	font-size: 150%;*/
+/*	font-weight: bolder;*/
+    border: 1px solid gray;
+    min-height: 95px;
 }
-.pdf_link {
-    text-align: center;
-    margin-left: 100px;
+#avoid_dw_scams {
+	font-size: 150%;
+	font-weight: bolder;
+    color: #61377E;
 }
+#freeguide {
+	font-size: 10px;
+	text-align: right;
+}
+
 .vertical_line {
     border-bottom: 1px dashed #8339EA;   /*  #F2F2F2;  */
     margin: 5px 0;
@@ -62,6 +73,18 @@ footer {
 .center {
     text-align: center;
 }
+#splash-header {
+	text-align: center;
+	margin-bottom: 30px;
+}
+#splash-body {
+	margin-bottom: 50px;
+}
+#splash-body-two {
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
+
 .double_font_size {
     font-size: 200%;
 }
@@ -204,6 +227,8 @@ footer {
     color: silver;
 }
 
-
+.dwguide {
+	margin: 20px 0 50px 0;
+}
 
 
