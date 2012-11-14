@@ -52,9 +52,9 @@ function hopsPost(button, current, next) {
     var timezone = jstz.determine();
 
 //    var HOST = "http://calm-falls-3515.herokuapp.com/";
-    var HOST = "http://localhost:3000/";
-
-    var target = HOST + "hop.json";
+//    var HOST = "http://localhost:3000/";
+//    var target = HOST + "hop.json";
+    var target = "/hop.json";
     var payload = { "hop" : 
                   {  "prev_page"      : current,
                      "page"           : button + " : " + next,
