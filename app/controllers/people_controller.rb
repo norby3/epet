@@ -214,10 +214,11 @@ class PeopleController < ApplicationController
       @photos = []
       if @pets.size > 0
           # the photos for those pets
-          @photos = Petphoto.where(:pet_id => @pets).order("created_at DESC").uniq.pluck(:image)
+          #@photos = Petphoto.where(:pet_id => @pets).order("created_at DESC").uniq.pluck(:image)
+          @petphotos = Petphoto.where(:pet_id => @pets).order("created_at DESC").uniq(:image)
       end
-      @photos.each_with_index do |p, x|
-        @photos[x] = "petphotos/" + p
+      @petphotos.each_with_index do |p, x|
+        @photos[x] = "petphotos/" + p.image
       end
       #logger.debug("@photos.length = " + @photos.length.to_s + " @photos = " + @photos.to_s)
       #if @photos.length < 12 
