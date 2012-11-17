@@ -212,20 +212,22 @@ class PeopleController < ApplicationController
       @pets = Caretaker.where(:person_id => @person.id).uniq.pluck(:pet_id)
       #logger.debug("@pets = " + @pets.to_s)
       @photos = []
-      #if @pets.size > 0
+      if @pets.size > 0
           # the photos for those pets
           #@photos = Petphoto.where(:pet_id => @pets).order("created_at DESC").uniq.pluck(:image)
-      #    @petphotos = Petphoto.where(:pet_id => @pets).order("created_at DESC").uniq(:image)
-      #end
-      #x = 0
-      #@petphotos.each do |p|
-      #  @photos[x] = "petphotos/" + p.image
-      #  x = x + 1
-      #end
+          @petphotos = Petphoto.where(:pet_id => @pets).order("created_at DESC").uniq(:image)
+      end
+      x = 0
+      if @petphotos.size > 0
+          @petphotos.each do |p|
+            @photos[x] = "petphotos/" + p.image
+            x = x + 1
+          end
+      end 
       #logger.debug("@photos.length = " + @photos.length.to_s + " @photos = " + @photos.to_s)
-      #if @photos.length < 12 
-        # @photos = fill_photo_array(@photos)
-      #end
+      if @photos.length < 12 
+         @photos = fill_photo_array(@photos)
+      end
       @samples = ['sample/00.png', 'sample/01.png', 'sample/02.png', 'sample/03.png', 'sample/04.png', 'sample/05.png',
         'sample/06.png', 'sample/07.png', 'sample/08.png', 'sample/09.png', 'sample/10.png', 'sample/11.png', 'sample/12.png']
       i = 0
