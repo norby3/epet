@@ -212,16 +212,16 @@ class PeopleController < ApplicationController
       @pets = Caretaker.where(:person_id => @person.id).uniq.pluck(:pet_id)
       #logger.debug("@pets = " + @pets.to_s)
       @photos = []
-      if @pets.size > 0
+      #if @pets.size > 0
           # the photos for those pets
           #@photos = Petphoto.where(:pet_id => @pets).order("created_at DESC").uniq.pluck(:image)
-          @petphotos = Petphoto.where(:pet_id => @pets).order("created_at DESC").uniq(:image)
-      end
-      x = 0
-      @petphotos.each do |p|
-        @photos[x] = "petphotos/" + p.image
-        x = x + 1
-      end
+      #    @petphotos = Petphoto.where(:pet_id => @pets).order("created_at DESC").uniq(:image)
+      #end
+      #x = 0
+      #@petphotos.each do |p|
+      #  @photos[x] = "petphotos/" + p.image
+      #  x = x + 1
+      #end
       #logger.debug("@photos.length = " + @photos.length.to_s + " @photos = " + @photos.to_s)
       #if @photos.length < 12 
         # @photos = fill_photo_array(@photos)
