@@ -1,12 +1,15 @@
 Epet5::Application.routes.draw do
 
   post "create_invited_mobile_user" => "people#create_invited_mobile_user"
+  post "accept_invite" => "invitations#accept_invite"
 
   # trying to setup redirect to open the mobile app
   # the operating system should see PetOwner:// and then want to open PetOwneriOS
   #match "friendsfamily/:email/:token" => redirect("PetOwner://epetfolio/%{email}/%{token}")
   match "friendsfamily/:token" => redirect("PetOwner://epetfolio/%{token}")
-  
+  #match "friendsfamily/:token" => "invitations#accept_invitation_new_user"
+  match "friendsfamily2/:token" => "invitations#accept_invitation_existing_user"
+
   # these did not work...
   #  match "friendsfamily/:verify_email_token" => redirect {|params| "PetOwner://#{params[:verify_email_token]}" }
   #match "friendsfamily/:token" => redirect("PetOwner://#{token}")

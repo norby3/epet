@@ -207,62 +207,49 @@ class PeopleController < ApplicationController
   #     @photos
   def mobile_user_updates
       @person = Person.find_by_upid(params[:id])
+      
+      @family = []
+      @friends = []
+      @person.person_connections.each do |ff|
+          other_person = Person.find(ff.person_b_id)
+          logger.debug("other_person email = #{other_person.email} and id = #{other_person.id}")
+          if ff.category.eql?('Family')
+              @family << { other_person.email => other_person.id }
+          else 
+              @friends << { other_person.email => other_person.id }
+          end
+      end
+      logger.debug("@family.size = #{@family.size}")
+      logger.debug("@friends.size = #{@friends.size}")
 
       # a list of pet_ids where chistine is (f&f) caretaker
       @pets = Caretaker.where(:person_id => @person.id).uniq.pluck(:pet_id)
       #logger.debug("@pets = " + @pets.to_s)
       
       # always want a set of photos for the user to see
-      @photos = []
+      @photos = ['sample/00.png', 'sample/01.png', 'sample/02.png', 'sample/03.png', 'sample/04.png', 'sample/05.png',
+        'sample/06.png', 'sample/07.png', 'sample/08.png', 'sample/09.png', 'sample/10.png', 'sample/11.png']
+      
+      logger.debug "@pets.size = #{@pets.size}"
       if @pets.size > 0
-          # the photos for those pets
+          # if there are any real photos, add them starting at beginning of the array
           #@photos = Petphoto.where(:pet_id => @pets).order("created_at DESC").uniq.pluck(:image)
-          @petphotos = Petphoto.where(:pet_id => @pets).order("created_at DESC").uniq(:image)
+          petphotos = Petphoto.where(:pet_id => @pets).order("created_at DESC").uniq(:image)
           x = 0
-          if @petphotos && @petphotos.size > 0
-              @petphotos.each do |p|
-                @photos[x] = "petphotos/" + p.image
-                x = x + 1
+          logger.debug "petphotos size = " + petphotos.size.to_s
+          if petphotos && petphotos.size > 0
+              petphotos.each do |p|
+                  @photos[x] = "petphotos/" + p.image
+                  logger.debug "adding real pet photo - x = #{x} "
+                  x += 1
               end
-          end 
-      end
-
-      #logger.debug("@photos.length = " + @photos.length.to_s + " @photos = " + @photos.to_s)
-      if @photos.length < 12 
-         @photos = fill_photo_array(@photos)
-      end
-      @samples = ['sample/00.png', 'sample/01.png', 'sample/02.png', 'sample/03.png', 'sample/04.png', 'sample/05.png',
-        'sample/06.png', 'sample/07.png', 'sample/08.png', 'sample/09.png', 'sample/10.png', 'sample/11.png', 'sample/12.png']
-      i = 0
-      while i < 12
-         if @photos[i].blank?
-             @photos[i] = @samples[i]
-         end
-         i += 1
+          end
       end
       @slides = []
       1.upto(27) do |n|
         @slides << n.to_s + ".png"
       end
-      render json: {:person => @person, :pets => @pets, :photos => @photos, :adwsg_slides => @slides }, :layout => false
-  end
-  
-  # always want to show bunch of photos
-  # https://s3.amazonaws.com/epetfolio/uploads/sample/00.png
-  def fill_photo_array(pixs)
-      @samples = ['sample/00.png', 'sample/01.png', 'sample/02.png', 'sample/03.png', 'sample/04.png', 'sample/05.png',
-        'sample/06.png', 'sample/07.png', 'sample/08.png', 'sample/09.png', 'sample/10.png', 'sample/11.png', 'sample/12.png'
-        ]
-      @pixs = Array.new()
-      0.upto(11) do |i|
-          if pixs[i].blank? 
-            @pixs <<  @samples[(0..11).to_a.sample]
-          else 
-            @pixs << pixs[i]
-          end
-          #logger.debug("@pixs = " + @pixs.to_s)
-      end
-      return @pixs
+      render json: {:person => @person, :family => @family, :friends => @freinds, :pets => @pets, :photos => @photos, :adwsg_slides => @slides }, :layout => false
   end
 
 end

@@ -1,11 +1,26 @@
 
 <p>Hello from ePetfolio</p>
-<p>You have been invited to join the ePetfolio Family & Friends network of <%= @requestor_email %></p>
+<p>You have been invited to join the Family & Friends network of <%= @requestor_email %></p>
 
 <br />
 <!-- < %= link_to "Accept ePetfolio Invitation", "http://192.168.1.80:3000/friendsfamily/#{@invitation.verify_email_token}" %> -->
 
-<%= link_to "Accept ePetfolio Invitation", "#{root_url}friendsfamily/#{@invitation.verify_email_token}" %>
+<% if @invitation.existing_user.eql?('true') %>   <!-- if person is member already, then they have the app -->
+
+    <!-- < %= link_to "Accept ePetfolio Invitation", "#{root_url}friendsfamily2/#{@invitation.verify_email_token}" %> -->
+    <%= link_to "Accept ePetfolio Invitation", "#{root_url}friendsfamily/#{@invitation.verify_email_token}" %>
+
+<% else %>  <!-- person is NOT member already, give them links to download the app -->
+    <h2>Step #1 - Install the app on your mobile phone/device</h2>
+    <p><%= link_to "(fix this) Download the ePetfolio app for iPhone", "iphone-foobar.com" %></p>
+    <p><%= link_to "(fix this) Download the ePetfolio app for Android", "android-foobar.com" %></p>
+    <br />
+    <h2>Step #2 - Accept the invitation by clicking the link below</h2>
+    <p>Be sure to do this from your mobile phone/device</p>
+    <p><%= link_to "Accept ePetfolio Invitation", "#{root_url}friendsfamily/#{@invitation.verify_email_token}" %></p>
+
+<% end %>
+
 <br /><br />
 
 

@@ -154,7 +154,7 @@ class InvitationsController < ApplicationController
       # work around: setting the device's unique user id (uuid) to ip_address
       @invitation.verify_email_sent_at = Time.zone.now
 
-      @known_user_being_invited = User.where(:email => params[:invitation][:email], :status => 'active').first
+      @known_user_being_invited = Person.where(:email => params[:invitation][:email], :status => 'active mobile').first
       if @known_user_being_invited
           @invitation.existing_user = 'true' 
       else 
@@ -176,6 +176,60 @@ class InvitationsController < ApplicationController
       logger.debug("create_mobile end")
   end
 
+
+  # takes a unique invitation token ( params[:verify_email_token] ) and updates the row's status 
+  def accept_invitation_existing_user
+      #  find and update the invitation
+      @invitation = Invitation.find_by_verify_email_token(params[:token])
+      @invitation.update_attributes(:status => "accepted")
+      #  find the two people
+      @invitor = Person.where(:email => @invitation.requestor_email, :status => 'active mobile').order('updated_at DESC').first!
+      @invitee = Person.where(:email => @invitation.email, :status => 'active mobile').order('updated_at DESC').first!
+      #  create the first person_connection 
+      @invitor.person_connections.build(:person_a_id => self, :person_b_id => @invitee.id,
+          :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
+      #  create the second (reverse) person_connection 
+      @invitee.person_connections.build(:person_a_id => self, :person_b_id => @invitor.id,
+          :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
+      if @invitor.save && @invitee.save 
+#          redirect_to "PetOwner://epetfolio/%{token}"
+          redirect_to "PetOwner://epetfolio/accepted_invite_known_user"
+      else 
+          logger.error("Error accepting f&f invitation")
+      end
+  end
+
+    # POST request from accepting_invite_form
+    # takes a unique invitation token ( params[:verify_email_token] ) and upid
+    # updates the Invitation row's status 
+    # updates the Person row
+    # creates the person_connections
+    # returns Person json obj
+    def accept_invite
+        #  find and update the invitation
+        @invitation = Invitation.find_by_verify_email_token(params[:token])
+        @invitation.update_attributes(:status => "accepted")
+        #  find the two people
+        @invitor = Person.where(:email => @invitation.requestor_email, :status => 'active mobile').order('updated_at DESC').first!
+        @invitee = Person.find_by_upid(params[:upid])
+        if @invitee.email.blank?
+            @invitee.email = @invitation.email    # this person's email is now verified
+        end
+        if !@invitee.status.eql?('active mobile')
+            @invitee.status = 'active mobile'
+        end
+        #  create the first person_connection 
+        @invitor.person_connections.build(:person_a_id => self, :person_b_id => @invitee.id,
+            :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
+        #  create the second (reverse) person_connection 
+        @invitee.person_connections.build(:person_a_id => self, :person_b_id => @invitor.id,
+            :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
+        if @invitor.save && @invitee.save 
+            render json: @invitee
+        else 
+            logger.error("Error accepting f&f invitation")
+        end
+    end
 
 end
 
