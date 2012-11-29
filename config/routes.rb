@@ -1,24 +1,12 @@
 Epet5::Application.routes.draw do
 
-  post "create_invited_mobile_user" => "people#create_invited_mobile_user"
+  # redirect to open the mobile app
+  # the operating system should recognize the custom URL PetOwner:// and open PetOwneriOS app
+  match "friendsfamily/:token" => redirect("PetOwner://epetfolio/%{token}")
   post "accept_invite" => "invitations#accept_invite"
 
-  # trying to setup redirect to open the mobile app
-  # the operating system should see PetOwner:// and then want to open PetOwneriOS
-  #match "friendsfamily/:email/:token" => redirect("PetOwner://epetfolio/%{email}/%{token}")
-  match "friendsfamily/:token" => redirect("PetOwner://epetfolio/%{token}")
-  #match "friendsfamily/:token" => "invitations#accept_invitation_new_user"
-  match "friendsfamily2/:token" => "invitations#accept_invitation_existing_user"
-
-  # these did not work...
-  #  match "friendsfamily/:verify_email_token" => redirect {|params| "PetOwner://#{params[:verify_email_token]}" }
-  #match "friendsfamily/:token" => redirect("PetOwner://#{token}")
-  #match "friendsfamily/:token" => redirect {|params| "PetOwner://epetfolio/#{params[:token]}" }
-  #match "friendsfamily/:token" => redirect( url_for("PetOwner://epetfolio/%{token}", :port => nil) )
-
-  # mobile API Pet Owner - ajax requests from jquery-mobile forms
   match "verify_email_mobile_user" => "people#verify_email_mobile"
-  #post "device_app_init" => "users#create_mobile"
+
   post "new_mobile_user" => "people#create_mobile"
   get "checkForMobileUserUpdates" => "people#mobile_user_updates"
 
@@ -39,8 +27,6 @@ Epet5::Application.routes.draw do
   
   match "mobile_pets" => "pets#mobile_pets_list"
   match "mobile_pet" => "pets#mobile_pet"
-
-#  post "add_pet" => ""
 
   resources :dogwalks do
     resources :petphotos
