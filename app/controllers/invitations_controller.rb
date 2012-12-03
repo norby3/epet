@@ -224,6 +224,12 @@ class InvitationsController < ApplicationController
         #  create the second (reverse) person_connection 
         @invitee.person_connections.build(:person_a_id => self, :person_b_id => @invitor.id,
             :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
+        if @invitation.category.eql?('Spouse-Partner')
+            # add caretaker row for each pet
+            @invitor.caretakers.each do |ct|
+               @invitee.caretakers.build(:pet_id => ct.pet_id, :primary_role => 'Owner', :status => 'active', :started_at => Time.now) 
+            end
+        end
         if @invitor.save && @invitee.save 
             render json: @invitee
         else 
