@@ -52,7 +52,7 @@ class PetsController < ApplicationController
 
   # GET /pets/1/edit
   def edit
-    @pet = Pet.find(params[:id])
+      @pet = Pet.find(params[:id])
   end
 
   # POST /pets
@@ -65,17 +65,23 @@ class PetsController < ApplicationController
         @person = current_user.person
     end
     @pet.caretakers.new(:person_id => @person.id, :primary_role => 'Owner')
-
+    
     #@picture = @pet.picture.new(params[:picture])    
 
     respond_to do |format|
       if @pet.save
-        #format.html { redirect_to @pet, notice: 'Pet was successfully created.' }
-        format.html { redirect_to @person, notice: 'Pet added.' }
-        format.json { render json: @pet, status: :created, location: @pet }
+          # for each of owner's family & friends add a row as pet caretaker
+          @person.person_connections.each do |fandf|
+              famfrnd = Person.find(fandf.person_b_id)
+              famfrnd.caretakers.build(:pet_id => @pet.id, :primary_role => fandf.category, :status => 'active', :started_at => Time.now)
+              famfrnd.save
+          end
+          #format.html { redirect_to @pet, notice: 'Pet was successfully created.' }
+          format.html { redirect_to @person, notice: 'Pet added.' }
+          format.json { render json: @pet, status: :created, location: @pet }
       else
-        format.html { render action: "new" }
-        format.json { render json: @pet.errors, status: :unprocessable_entity }
+          format.html { render action: "new" }
+          format.json { render json: @pet.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -111,10 +117,8 @@ class PetsController < ApplicationController
   # call via ajax GET from mobile apps - return a UL list of pets
   # via erb view, sending back HTML snippet to be inserted into the mobile page
   def mobile_pets_list
-    @person= Person.find(params[:person_id])
-    @pets = @person.pets
-    
-    @ffpets = Pet.includes(:caretakers).where("caretakers.primary_role != 'Owner' and caretakers.person_id = ?", params[:person_id])
+    @person= Person.includes(:caretakers, :pets).find(params[:person_id])
+    #@pets = @person.pets.includes(:caretakers)
     
     # renders views/pets/mobile_pets_list.html.erb
     render :layout => false

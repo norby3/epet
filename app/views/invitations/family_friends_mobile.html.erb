@@ -1,10 +1,20 @@
 
 <ul data-role="listview" id="myfflistview">
-	<li data-role="list-divider">Family & Friends</li>	
-	<% if @person.person_connections.empty? %>
+	<li data-role="list-divider">Spouse/Partner</li>	
+	<% if @partners.empty? %>
 		<li></li>
 	<% else %>
-	    <% @person.person_connections.each do |ff| %>
+	    <% @partners.each do |spouse| %>
+	        <% @other = Person.find(spouse.person_b_id) %>
+		    <li data-icon="false"><a href="#" name="ffDetailsLink" id="<%= @other.id %>"><%= @other.email %></a></li>
+	    <% end %>
+	<% end %>
+
+	<li data-role="list-divider">Family & Friends</li>	
+	<% if @famandfrnds.empty? %>
+		<li></li>
+	<% else %>
+	    <% @famandfrnds.each do |ff| %>
 	        <% @other = Person.find(ff.person_b_id) %>
 		    <li data-icon="false"><a href="#" name="ffDetailsLink" id="<%= @other.id %>"><%= @other.email %></a></li>
 	    <% end %>

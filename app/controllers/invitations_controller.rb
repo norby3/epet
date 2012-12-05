@@ -142,8 +142,12 @@ class InvitationsController < ApplicationController
   
   def family_friends_mobile 
     @person = Person.find(params[:person_id])
-    # view will have access to person_connections
+    @partners = @person.person_connections.where(:category => 'Spouse-Partner', :status => 'active')
+    @famandfrnds = @person.person_connections.where(:category => ['Family', 'Friend', ''], :status => 'active')
+
+    # should this be person_id or email??
     @invitations = Invitation.where(:requestor_email => @person.email, :status => 'invited')
+
     render :layout => false
   end
 
@@ -224,12 +228,21 @@ class InvitationsController < ApplicationController
         #  create the second (reverse) person_connection 
         @invitee.person_connections.build(:person_a_id => self, :person_b_id => @invitor.id,
             :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
-        if @invitation.category.eql?('Spouse-Partner')
-            # add caretaker row for each pet
-            @invitor.caretakers.each do |ct|
-               @invitee.caretakers.build(:pet_id => ct.pet_id, :primary_role => 'Owner', :status => 'active', :started_at => Time.now) 
+
+        # add caretaker row for each pet owned by the invitor
+        @invitor.caretakers.each do |ct|
+            if ct.primary_role.eql?('Owner')
+                if @invitation.category.eql?('Spouse-Partner')
+                    p_role = 'Owner'
+                elsif @invitation.category.eql?('Family') || @invitation.category.eql?('Friend')  
+                    p_role = @invitation.category
+                else 
+                    p_role = 'Other' 
+                end
+                @invitee.caretakers.build(:pet_id => ct.pet_id, :primary_role => p_role, :status => 'active', :started_at => Time.now) 
             end
         end
+
         if @invitor.save && @invitee.save 
             render json: @invitee
         else 
