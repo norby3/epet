@@ -210,8 +210,11 @@ class InvitationsController < ApplicationController
     # creates the person_connections
     # returns Person json obj
     def accept_invite
-        #  find and update the invitation
+        #  find the invitation
         @invitation = Invitation.find_by_verify_email_token(params[:token])
+        #  has the invitation already been accepted?
+        
+        # if not already accepted, update the status
         @invitation.update_attributes(:status => "accepted")
         #  find the two people
         @invitor = Person.where(:email => @invitation.requestor_email, :status => 'active mobile').order('updated_at DESC').first!
