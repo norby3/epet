@@ -11,11 +11,11 @@ class Dogwalk < ActiveRecord::Base
   # goal here is to keep start/stop time reflecting UTC and not the local time of the mobile device
   def correct_times
       if !self.start_as_millis.blank?
-          self.start = Time.at(start_as_millis/1000)
+          self.start = Time.at(self.start_as_millis.to_i/1000)
       end
       
       if !self.stop_as_millis.blank?
-          self.stop = Time.at(stop_as_millis/1000)
+          self.stop = Time.at(self.stop_as_millis.to_i/1000)
       end
   end
 
