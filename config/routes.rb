@@ -2,7 +2,10 @@ Epet5::Application.routes.draw do
 
   # redirect to open the mobile app
   # the operating system should recognize the custom URL PetOwner:// and open PetOwneriOS app
-  match "friendsfamily/:token" => redirect("PetOwner://epetfolio/%{token}")
+  #match "friendsfamily/:token" => redirect("PetOwner://epetfolio/%{token}")
+  # adding some functionality to this request - try to prevent duplicate accept invites - controller will redirect
+  match "friendsfamily/:token" => "invitations#preliminary_accept_invite"
+  
   post "accept_invite" => "invitations#accept_invite"
 
   match "verify_email_mobile_user" => "people#verify_email_mobile"

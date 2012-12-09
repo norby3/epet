@@ -111,7 +111,6 @@ class DogwalksController < ApplicationController
     @dogwalk = Dogwalk.find(params[:id])
     if @dogwalk.petphoto && !@dogwalk.petphoto.image_created_at.blank?
         @dt = Time.parse(@dogwalk.petphoto.image_created_at)
-        #@dt = Time.parse(@dogwalk.petphoto.created_at)
     end
     render :layout => false
   end

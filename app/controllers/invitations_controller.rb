@@ -203,6 +203,27 @@ class InvitationsController < ApplicationController
       end
   end
 
+    #  from their email inbox, the user has clicked on "Accept Invite" link from a f&f 
+    #  check if the invitation has already been accepted
+    #  check if the request is from a mobile device or a laptop 
+    #     (should click the link from the mobile device where the epet app is installed)
+    def preliminary_accept_invite 
+        #  is request from mobile device?
+        if request.user_agent =~ /Mobile|webOS/
+            #  find the invitation
+            @invitation = Invitation.find_by_verify_email_token(params[:token])
+            if @invitation.status.eql?('invited')
+                # good 
+                redirect_to "PetOwner://epetfolio/#{params[:token]}"
+            elsif @invitation.status.eql?('accepted')
+                # bad dup
+                redirect_to "PetOwner://epetfolio/duplicate_accept_invitation"
+            end
+        else 
+            # render view preliminary_accept_invite - "Please accept the invite from the mobile device where.."
+        end
+    end
+    
     # POST request from accepting_invite_form
     # takes a unique invitation token ( params[:verify_email_token] ) and upid
     # updates the Invitation row's status 
@@ -210,45 +231,57 @@ class InvitationsController < ApplicationController
     # creates the person_connections
     # returns Person json obj
     def accept_invite
+
         #  find the invitation
         @invitation = Invitation.find_by_verify_email_token(params[:token])
+        duplicate_accept_invite = false
+
         #  has the invitation already been accepted?
-        
-        # if not already accepted, update the status
-        @invitation.update_attributes(:status => "accepted")
-        #  find the two people
-        @invitor = Person.where(:email => @invitation.requestor_email, :status => 'active mobile').order('updated_at DESC').first!
-        @invitee = Person.find_by_upid(params[:upid])
-        if @invitee.email.blank?
-            @invitee.email = @invitation.email    # this person's email is now verified
-        end
-        if !@invitee.status.eql?('active mobile')
-            @invitee.status = 'active mobile'
-        end
-        #  create the first person_connection 
-        @invitor.person_connections.build(:person_a_id => self, :person_b_id => @invitee.id,
-            :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
-        #  create the second (reverse) person_connection 
-        @invitee.person_connections.build(:person_a_id => self, :person_b_id => @invitor.id,
-            :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
+        if @invitation.status.eql?('accepted')
+            duplicate_accept_invite = true
+        else
+            @invitation.update_attributes(:status => 'accepted')        
+            #  find the two people
+            @invitor = Person.where(:email => @invitation.requestor_email, :status => 'active mobile').order('updated_at DESC').first!
 
-        # add caretaker row for each pet owned by the invitor
-        @invitor.caretakers.each do |ct|
-            if ct.primary_role.eql?('Owner')
-                if @invitation.category.eql?('Spouse-Partner')
-                    p_role = 'Owner'
-                elsif @invitation.category.eql?('Family') || @invitation.category.eql?('Friend')  
-                    p_role = @invitation.category
-                else 
-                    p_role = 'Other' 
-                end
-                @invitee.caretakers.build(:pet_id => ct.pet_id, :primary_role => p_role, :status => 'active', :started_at => Time.now) 
+            # when the invitee installs and starts the app, they get a upid, but we may not yet know their email
+            @invitee = Person.find_by_upid(params[:upid])
+            if @invitee.email.blank?
+                @invitee.email = @invitation.email    # this person's email is now verified
             end
+            if !@invitee.status.eql?('active mobile')
+                @invitee.status = 'active mobile'
+            end
+
+            #  create the first person_connection 
+            @invitor.person_connections.build(:person_a_id => self, :person_b_id => @invitee.id,
+                :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
+            #  create the second (reverse) person_connection 
+            @invitee.person_connections.build(:person_a_id => self, :person_b_id => @invitor.id,
+                :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
+
+            # add caretaker row for each pet owned by the invitor
+            @invitor.caretakers.each do |ct|
+                if ct.primary_role.eql?('Owner')
+                    if @invitation.category.eql?('Spouse-Partner')
+                        p_role = 'Owner'
+                    elsif @invitation.category.eql?('Family') || @invitation.category.eql?('Friend')  
+                        p_role = @invitation.category
+                    else 
+                        p_role = 'Other' 
+                    end
+                    @invitee.caretakers.build(:pet_id => ct.pet_id, :primary_role => p_role, :status => 'active', :started_at => Time.now) 
+                end
+            end
+            @invitor.save && @invitee.save 
         end
 
-        if @invitor.save && @invitee.save 
+        if duplicate_accept_invite
+            #render json: "duplicate_accept_invite"
+            render :json => '{duplicate_accept_invite: true}'
+        elsif @invitee 
             render json: @invitee
-        else 
+        else
             logger.error("Error accepting f&f invitation")
         end
     end

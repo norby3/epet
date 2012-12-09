@@ -6,4 +6,6 @@ class Pet < ActiveRecord::Base
     has_many :petphotos
     has_many :dogwalks
     
+    validates_presence_of :name
+
 end

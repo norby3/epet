@@ -46,7 +46,8 @@
 </table>
 <p>Comments: <%= @dogwalk.comments %></p>
 <hr />
-<% if @dogwalk.petphoto %>
+<!-- < % if @dogwalk.petphoto %> -->
+<% if !@dogwalk.petphoto.image.blank? %>
 	<h3>Dog Walk Photo</h3>
 	<div id="dogwalk_photo_area">
 	   	<img src="https://s3.amazonaws.com/epetfolio/uploads/dogwalks/<%= @dogwalk.petphoto.image %>" >
@@ -65,7 +66,7 @@
 		  <tr>
 		    <td class="tlabel">Time:</th>
 		    <!-- <td>< %= @dogwalk.petphoto.image_created_at.strftime("%a %b %d %I:%M%P %Z") %></td> -->
-			<td><%= @dt.strftime("%I:%M%P %Z") %></td>
+			<td><%= @dt.strftime("%I:%M %P") %></td>
 		  </tr>
 		<% end %>
 		<% if @dogwalk.petphoto.address %>
