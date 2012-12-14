@@ -14,11 +14,16 @@ class DogwalksController < ApplicationController
   # GET /dogwalks/1.json
   def show
     #@dogwalk = Dogwalk.find(params[:id])
-    @dogwalk = Dogwalk.includes({:pet => :petphotos}).find(params[:id])
+    @dogwalk = Dogwalk.includes(:petphoto, {:pet => :petphotos}).find(params[:id])
     Time.zone = @dogwalk.timezone || 'America/New_York'
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: {:dogwalk => @dogwalk, :pet => @dogwalk.pet, :petphoto => @dogwalk.pet.petphotos[0] } }
+      #format.json { render json: {:dogwalk => @dogwalk, :pet => @dogwalk.pet, :petphoto => @dogwalk.pet.petphotos[0] } }
+      format.json { render json: {:dogwalk      => @dogwalk, 
+                                  :pet          => @dogwalk.pet, 
+                                  :petphoto     => @dogwalk.pet.petphotos[0],
+                                  :dogwalkphoto => @dogwalk.petphoto 
+                                  } }      
     end
   end
 

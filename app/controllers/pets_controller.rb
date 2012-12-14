@@ -123,6 +123,7 @@ class PetsController < ApplicationController
     # renders views/pets/mobile_pets_list.html.erb
     render :layout => false
   end
+
   def mobile_pet
     #@pet = Pet.includes(:petphotos).find(params[:pet_id]).order("petphotos.created_at DESC").first
     @pet = Pet.includes(:petphotos).find(params[:pet_id])
@@ -130,9 +131,8 @@ class PetsController < ApplicationController
     if (@pet.petphotos.length > 0)
       logger.debug("image = " + @pet.petphotos[0].image)
     end 
-    
-    # renders views/pets/mobile_pet.html.erb
-    render :layout => false
+
+    render json: {:pet => @pet, :petphoto => @pet.petphotos[0] }
   end
   
 end
