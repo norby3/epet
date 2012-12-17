@@ -229,6 +229,7 @@ class InvitationsController < ApplicationController
     # updates the Invitation row's status 
     # updates the Person row
     # creates the person_connections
+    # creates the caretakers (pet connections)
     # returns Person json obj
     def accept_invite
 

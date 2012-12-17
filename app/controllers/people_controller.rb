@@ -87,6 +87,8 @@ class PeopleController < ApplicationController
   def create_mobile
     @person = Person.new(params[:person])
     @person.first_name = @person.devices[0].name.split(/\b/)[0]
+    @person.last_name = @person.devices[0].name.split(/\b/)[2]
+
     @person.status = "new mobile"
     if @person.save
       render json: @person

@@ -3,7 +3,7 @@ class CreateInvitations < ActiveRecord::Migration
     create_table :invitations do |t|
       t.string :email
       t.string :existing_user
-      t.string :category
+      t.string :category, :default => 'Family'
       t.string :verify_email_token
       t.datetime :verify_email_sent_at
       t.string :requestor_email
