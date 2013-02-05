@@ -147,6 +147,7 @@ class PeopleController < ApplicationController
 
   # PUT /people/1
   # PUT /people/1.json
+  # edit_profile form in pet owner app
   # do betters: 
   #    keep count of # of verify_email requests
   def update
@@ -208,8 +209,13 @@ class PeopleController < ApplicationController
   #  list of image file names on s3
   #     @photos
   def mobile_user_updates
+      # original before adding addresses
       @person = Person.find_by_upid(params[:id])
       
+      # didn't work 
+      #@person = Person.includes(:addresses).find_by_upid(params[:id]).order('addresses.updated_at desc')
+      @address = @person.addresses.last
+            
       @family = []
       @friends = []
       @person.person_connections.each do |ff|
@@ -251,9 +257,72 @@ class PeopleController < ApplicationController
       1.upto(27) do |n|
         @slides << n.to_s + ".png"
       end
-      render json: {:person => @person, :family => @family, :friends => @freinds, :pets => @pets, :photos => @photos, :adwsg_slides => @slides }, :layout => false
+      # working version before adding addresses
+      #render json: {:person => @person, :family => @family, :friends => @freinds, :pets => @pets, :photos => @photos, :adwsg_slides => @slides }, :layout => false
+
+      #render json: {:person => @person.as_json(:include => :addresses), :family => @family, :friends => @freinds, :pets => @pets, :photos => @photos, :adwsg_slides => @slides }, :layout => false
+      render json: {:person => @person, :address => @address, :family => @family, :friends => @freinds, :pets => @pets, :photos => @photos, :adwsg_slides => @slides }, :layout => false
   end
 
+  # if the pro mobile user verified their email - status = "active mobile"
+  #  find all people & pets & related photos
+  # no view or html - returns json 
+  #  list of family email addresses & person.ids  
+  #     @family_emails
+  #  list of friends email addresses & person.ids
+  #     @friends_emails
+  #  list of image file names on s3
+  #     @photos
+  def pro_mobile_user_updates
+      @person = Person.find_by_upid(params[:id])
+      
+      @clients = []
+      @person.person_connections.each do |pc|
+          other_person = Person.find(pc.person_b_id)
+          logger.debug("other_person email = #{other_person.email} and id = #{other_person.id}")
+          if pc.category.eql?('Dog Walk Client')
+              @clients << { other_person.email => other_person.id }
+          end
+      end
+      logger.debug("@clients.size = #{@clients.size}")
+
+      # a list of pet_ids where chistine is (f&f) caretaker
+      @pets = Caretaker.where(:person_id => @person.id).uniq.pluck(:pet_id)
+      #logger.debug("@pets = " + @pets.to_s)
+      logger.debug "@pets.size = #{@pets.size}"
+      render json: {:person => @person, :clients => @clients, :pets => @pets }, :layout => false
+  end
+
+  def my_pet_pros 
+      @person = Person.find(params[:person_id])
+      @pro_connections = @person.person_connections.where(:category => ['Dog Walk Client', 'Groomer Client', 'Boarding Client', 'Veterinary Client'])
+      @clients = []
+      @pro_connections.each do |pc|
+          @clients << Person.find(pc.person_b_id)
+      end
+      logger.debug("@clients.size = #{@clients.size}")
+
+      render json: {:person => @person, :clients => @clients }, :layout => false
+  end
+  
+  # called by a "pro" app to show one client and that client's pets
+  def client_and_pets
+      #@person = Person.includes(:addresses).find(params[:id])
+      #@pets = @person.pets.includes(:petphotos)
+      @person = Person.includes(:addresses, :pets => :petphotos).find(params[:id])
+      #logger.debug("@pets[0].petphotos.size = #{@pets[0].petphotos.size}")
+      #render json: {:person => @person, :pets => @pets }, :layout => false
+      @address = @person.addresses.last
+      
+      render json: {:person => @person.as_json(:include => { :pets => { :include => :petphotos } } ), :address => @address}, :layout => false
+
+      #render json: {:person => @person.as_json(:include => { :pets => { :include => :petphotos }, :addresses} ) }, :layout => false
+      #render json: {:person => @person.as_json(:include => [:pets => { :include => {:petphotos} }, :addresses] ) }, :layout => false
+
+      #render json: {:person => @person.as_json(:include => [:pets => { :include => :petphotos }, :addresses] ) }, :layout => false
+
+  end
+  
 end
 
 

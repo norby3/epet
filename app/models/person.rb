@@ -7,7 +7,8 @@ class Person < ActiveRecord::Base
     has_many :pets, :through => :caretakers
     has_many :devices
     accepts_nested_attributes_for :devices
-
+    accepts_nested_attributes_for :addresses
+    
     before_create { generate_upid }
     before_update { generate_token(:comments) }
     

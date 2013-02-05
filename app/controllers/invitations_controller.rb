@@ -151,6 +151,20 @@ class InvitationsController < ApplicationController
     render :layout => false
   end
 
+  def clients_dogwalk
+    @person = Person.find(params[:id])
+
+    @pro_connections = @person.person_connections.where(:category => 'Dog Walk Client', :status => 'active')
+    @clients = []
+    @pro_connections.each do |pc|
+        @clients << Person.find(pc.person_b_id)
+    end
+    logger.debug("@clients.size = #{@clients.size}")
+
+    @invitations = Invitation.where(:requestor_email => @person.email, :status => 'invited')
+    render json: {:person => @person, :clients => @clients, :invitations => @invitations }, :layout => false    
+  end
+
   def create_mobile 
       logger.debug("create_mobile start")
       
@@ -180,6 +194,37 @@ class InvitationsController < ApplicationController
       logger.debug("create_mobile end")
   end
 
+  # similar to above (create_mobile)
+  # should rename "create_mobile" to pet_owner_inviting_friend_or_fam
+  # dogwalker entered client's email address - form fields
+  def dogwalker_inviting_client
+      logger.debug("dogwalker_inviting_client start")
+      @invitation = Invitation.new(params[:invitation])
+      # work around: setting the device's unique user id (uuid) to ip_address
+      @invitation.verify_email_sent_at = Time.zone.now
+
+      # is the person being invited already in epetfolio?
+      @known_user_being_invited = Person.where(:email => params[:invitation][:email], :status => 'active mobile').first
+      if @known_user_being_invited
+          @invitation.existing_user = 'true' 
+      else 
+          @invitation.existing_user = 'false'
+      end
+
+      # check for duplicate invitation - want to avoid badgering
+      @duplicate = Invitation.where(:email => params[:invitation][:email], :requestor_email => @invitation.requestor_email).first
+      if @duplicate
+          @duplicate.request_count += 1
+          @duplicate.save
+          UserMailer.dogwalker_inviting_client(@invitation.requestor_email, @duplicate).deliver if @duplicate.request_count < 3
+          #redirect_to person_path(current_user.person.id), :notice => "Duplicate Invite"
+      elsif @invitation.save
+          UserMailer.dogwalker_inviting_client(@invitation.requestor_email, @invitation).deliver
+      end
+
+      head :created
+      logger.debug("dogwalker_inviting_client end")      
+  end
 
   # takes a unique invitation token ( params[:verify_email_token] ) and updates the row's status 
   def accept_invitation_existing_user

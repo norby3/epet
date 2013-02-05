@@ -1,10 +1,15 @@
 Epet5::Application.routes.draw do
 
+  match "client_and_pets/:id" => "people#client_and_pets"
+  match "my_pet_pros" => "people#my_pet_pros"
+  match "clients_dogwalk/:id" => "invitations#clients_dogwalk"
+
   # redirect to open the mobile app
   # the operating system should recognize the custom URL PetOwner:// and open PetOwneriOS app
   #match "friendsfamily/:token" => redirect("PetOwner://epetfolio/%{token}")
   # adding some functionality to this request - try to prevent duplicate accept invites - controller will redirect
   match "friendsfamily/:token" => "invitations#preliminary_accept_invite"
+  match "client_accepting_dogwalker_invitation/:token" => "invitations#preliminary_accept_invite"
   
   post "accept_invite" => "invitations#accept_invite"
 
@@ -15,6 +20,7 @@ Epet5::Application.routes.draw do
 
   get "report_cards" => "dogwalks#dogwalks_mobile"
   match "dogwalk_mobile/:id" => "dogwalks#show_mobile"
+  get "pro_dogwalker_report_cards" => "dogwalks#pro_dogwalker_report_cards"
 
   get "mobile_photo_gallery" => "petphotos#mobile_photo_gallery"
 #  get "avoid_dogwalker_scams" => "petphotos#avoid_dogwalker_scams"   - moved to mobile_user_updates
@@ -22,6 +28,7 @@ Epet5::Application.routes.draw do
   get "measure/hop"
   get "family_friends" => "invitations#family_friends_mobile"
   post "ff_invite" => "invitations#create_mobile"
+  post "dogwalker_inviting_client" => "invitations#dogwalker_inviting_client"
   
   #match "mperson" => "people#show2"
   match "mperson" => "people#show3"

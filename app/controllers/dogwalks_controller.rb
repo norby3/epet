@@ -120,5 +120,11 @@ class DogwalksController < ApplicationController
     render :layout => false
   end
   
+  # find all the ended dogwalks for the param person - the person is pro dog walker 
+  def pro_dogwalker_report_cards 
+      @person = Person.find(params[:person_id])
+      @dogwalks = Dogwalk.order("updated_at desc").where("person_id = ? AND stop is not null", @person.id)
+      render "dogwalks_mobile", :layout => false
+  end
   
 end

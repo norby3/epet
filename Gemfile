@@ -8,7 +8,11 @@ gem 'rails', '3.2.2'
 #gem 'sqlite3'
 group :development do
     gem 'sqlite3'
+  gem 'better_errors'
+  gem 'binding_of_caller'
+  gem 'meta_request'
 end
+
 
 group :test, :production do
   gem 'pg'

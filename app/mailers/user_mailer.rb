@@ -18,6 +18,12 @@ class UserMailer < ActionMailer::Base
         @invitation = invitation
         mail to: invitation.email, :subject => "ePetfolio Invitation"
     end
+    
+    def dogwalker_inviting_client(current_user, invitation)
+        @requestor_email = current_user
+        @invitation = invitation
+        mail to: invitation.email, :subject => "ePetfolio Invitation"
+    end
 
     #  called by Person_Controller.update - mobile app did Verify My Email
     def verify_email_mobile_user(person)
