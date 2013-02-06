@@ -230,5 +230,7 @@ footer {
 .dwguide {
 	margin: 20px 0 50px 0;
 }
-
+.float-right {
+	float: right;
+}
 
