@@ -158,4 +158,4 @@ DEPENDENCIES
   sqlite3
   thin
   twitter-bootstrap-rails
-  uglifier (>= 1.0.3)
+  uglifier

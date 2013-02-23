@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-#gem 'rails', '3.2.2'
 gem 'rails', '3.2.11'
 
 # Bundle edge Rails instead:
@@ -28,7 +27,7 @@ group :assets do
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   # gem 'therubyracer'
 
-  gem 'uglifier', '>= 1.0.3'
+  gem 'uglifier'
   gem 'twitter-bootstrap-rails'
   
 end
