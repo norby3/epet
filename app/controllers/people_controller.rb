@@ -265,32 +265,49 @@ class PeopleController < ApplicationController
   end
 
   # if the pro mobile user verified their email - status = "active mobile"
-  #  find all people & pets & related photos
+  #  find all Clients (people & pets) & related photos
   # no view or html - returns json 
-  #  list of family email addresses & person.ids  
-  #     @family_emails
-  #  list of friends email addresses & person.ids
-  #     @friends_emails
   #  list of image file names on s3
   #     @photos
   def pro_mobile_user_updates
+      logger.debug "pro_mobile_user_updates start"
       @person = Person.find_by_upid(params[:id])
       
       @clients = []
       @person.person_connections.each do |pc|
-          other_person = Person.find(pc.person_b_id)
-          logger.debug("other_person email = #{other_person.email} and id = #{other_person.id}")
+          #other_person = Person.find(pc.person_b_id)
+          @other_person = Person.includes({:pets => :petphotos }, :addresses).find(pc.person_b_id)
+          #logger.debug("other_person email = #{@other_person.email} and id = #{@other_person.id}")
           if pc.category.eql?('Dog Walk Client')
-              @clients << { other_person.email => other_person.id }
+              #@clients << { other_person.email => other_person.id }
+              @clients << @other_person
           end
       end
       logger.debug("@clients.size = #{@clients.size}")
 
+      @invitations = Invitation.select(:email).where(:requestor_email => @person.email, :status => 'invited')
+      logger.debug("@invitations = " + @invitations.to_json)    
       # a list of pet_ids where chistine is (f&f) caretaker
-      @pets = Caretaker.where(:person_id => @person.id).uniq.pluck(:pet_id)
+      #  ????
+      #@pets = Caretaker.where(:person_id => @person.id).uniq.pluck(:pet_id)
       #logger.debug("@pets = " + @pets.to_s)
-      logger.debug "@pets.size = #{@pets.size}"
-      render json: {:person => @person, :clients => @clients, :pets => @pets }, :layout => false
+      #logger.debug "@pets.size = #{@pets.size}"
+      #render json: {:person => @person, :clients => @clients, :pets => @pets }, :layout => false
+      logger.debug "@clients = " + @clients.to_json(:only => [:first_name, :last_name, :email, :mobile_phone, :status, :id, :upid, :image, :timezone], 
+           :include => { :pets => { :only => [:name, :breed, :gender, :weight, :birthdate], :include => { :petphotos => { :only => [:id, :image] }}},
+                         :addresses => { :only => [:line1, :line2, :locality] }
+            } )
+
+      # render json: {:person => @person, :clients => @clients, :pets => @pets }, :layout => false
+      render json: 
+           {:person => @person,
+            :clients => @clients.to_json(:only => [:first_name, :last_name, :email, :mobile_phone, :status, :id, :upid, :image], 
+                 :include => { :pets => { :only => [:id, :name, :breed, :gender, :weight, :birthdate], :include => { :petphotos => { :only => [:id, :image] }}},
+                               :addresses => { :only => [:line1, :line2, :locality] }
+                             } ),
+            :invitations => @invitations.to_json
+           }, :layout => false
+      logger.debug "pro_mobile_user_updates end"
   end
 
   def my_pet_pros 

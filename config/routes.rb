@@ -4,6 +4,10 @@ Epet5::Application.routes.draw do
   match "my_pet_pros" => "people#my_pet_pros"
   match "clients_dogwalk/:id" => "invitations#clients_dogwalk"
 
+  # added 2013-02-17
+  #match "dogwalker_invited/:email" => "invitations#dogwalker_invited"
+  match "dogwalker_invited" => "invitations#dogwalker_invited"
+
   # redirect to open the mobile app
   # the operating system should recognize the custom URL PetOwner:// and open PetOwneriOS app
   #match "friendsfamily/:token" => redirect("PetOwner://epetfolio/%{token}")
@@ -17,6 +21,7 @@ Epet5::Application.routes.draw do
 
   post "new_mobile_user" => "people#create_mobile"
   get "checkForMobileUserUpdates" => "people#mobile_user_updates"
+  get "checkForProMobileUserUpdates" => "people#pro_mobile_user_updates"
 
   get "report_cards" => "dogwalks#dogwalks_mobile"
   match "dogwalk_mobile/:id" => "dogwalks#show_mobile"

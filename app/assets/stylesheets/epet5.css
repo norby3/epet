@@ -222,6 +222,11 @@ footer {
     font-weight: bold;
     text-align: center;
 }
+.subheading2 {
+    font-weight: bold;
+    text-align: center;
+    font-size: larger;
+}
 .small_gray_text {
     font-size: smaller;
     color: silver;
@@ -233,4 +238,31 @@ footer {
 .float-right {
 	float: right;
 }
+.fooz {
+	min-height: 10em;
+	background-color: #eeeeee;
+}
+
+.download-image {
+	width: 100px;
+    max-height: 100px;
+}
+.two-heading {
+	font-size: 24px;
+	font-weight: bold;
+}
+.more-coming {
+	margin-top: 10px;
+	font-size: 16px;
+}
+.why, .beta, .moreapps {
+	font-size: larger;
+}
+
+
+
+
+
+
+
 

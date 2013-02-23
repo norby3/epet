@@ -332,6 +332,16 @@ class InvitationsController < ApplicationController
         end
     end
 
+    # added 2013-02-17 - dog walker app - clients screen - "Clients Invited" list
+    def dogwalker_invited
+        
+        #@invitations = Invitation.invited_clients_email(params[:email]).select(:email)
+        @invitations = Invitation.invitees(params[:email]).select(:email)
+        logger.debug("@invitations.to_json = " + @invitations.to_json)
+        render json: {:invitations => @invitations }, :layout => false    
+        
+    end
+
 end
 
 

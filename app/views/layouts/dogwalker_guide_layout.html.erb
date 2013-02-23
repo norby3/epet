@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title><%= content_for?(:title) ? yield(:title) : "ePetfolio" %></title>
+		<%= csrf_meta_tags %>
+
+		<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+		<!--[if lt IE 9]>
+		  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+		<![endif]-->
+
+		<%= stylesheet_link_tag "application", :media => "all" %>
+
+		<link href="images/apple-touch-icon.png" rel="apple-touch-icon">
+		<link href="images/apple-touch-icon-72x72.png" rel="apple-touch-icon" sizes="72x72">
+		<link href="images/apple-touch-icon-114x114.png" rel="apple-touch-icon" sizes="114x114">
+	</head>
+    <body>
+		<div class="navbar navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container-fluid">
+					<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+					  <span class="icon-bar"></span>
+					  <span class="icon-bar"></span>
+					  <span class="icon-bar"></span>
+					</button>
+					<a class="brand" href="/"><%= image_tag "gimp-dachshund-logo-small.png" %>e<b>Petfolio</b> </a>
+					<div class="nav-collapse collapse">
+					  <ul class="nav">
+					    <li><a href="/">Home</a></li>
+					  </ul>
+					</div><!--/.nav-collapse -->
+				</div>     <!-- container-fluid -->
+			</div>    <!-- navbar-inner -->
+		</div>  <!-- navbar -->
+	    <div class="container-fluid">
+            <div class="row-fluid">
+				<div class="span3">
+					<div class="well sidebar-nav">
+					  <ul class="nav nav-list">
+					    <li class="nav-header">Contents</li>
+					    <!-- <li class="active"><a href="#">Link</a></li> -->
+					    <li><%= link_to "1. Start", page_path("dogwalker1")%></li>
+					    <li><%= link_to "2. Keys", page_path("dogwalker2")%></li>
+					    <li><%= link_to "3. Exercise", page_path("dogwalker3")%></li>
+
+					    <li><%= link_to "4. Routine", page_path("dogwalker4")%></li>
+					    <li><%= link_to "5. Relax", page_path("dogwalker5")%></li>
+					    <li><%= link_to "6. Squared Away", page_path("dogwalker6")%></li>				
+
+					    <li><%= link_to "7. Receipt", page_path("dogwalker7")%></li>
+					    <li><%= link_to "8. Don't Get Cheated-1", page_path("dogwalker8")%></li>
+					    <li><%= link_to "9. Don't Get Cheated-2", page_path("dogwalker9")%></li>				
+
+					    <li><%= link_to "10. Sample1", page_path("dogwalker10")%></li>
+					    <li><%= link_to "11. Sample2", page_path("dogwalker11")%></li>
+					    <li><%= link_to "12. Lie", page_path("dogwalker12")%></li>				
+
+					    <li><%= link_to "13. Selection", page_path("dogwalker13")%></li>
+					    <li><%= link_to "14. Range", page_path("dogwalker14")%></li>
+					    <li><%= link_to "15. Activity", page_path("dogwalker15")%></li>				
+
+					    <li><%= link_to "16. Group Size", page_path("dogwalker16")%></li>
+					    <li><%= link_to "17. Fit In", page_path("dogwalker17")%></li>
+					    <li><%= link_to "18. Walks Per Day", page_path("dogwalker18")%></li>
+
+					    <li><%= link_to "19. Special", page_path("dogwalker19")%></li>
+					    <li><%= link_to "20. Schedule", page_path("dogwalker20")%></li>
+					    <li><%= link_to "21. Insurance", page_path("dogwalker21")%></li>
+
+					    <li><%= link_to "22. House", page_path("dogwalker22")%></li>
+					    <li><%= link_to "23. Tied Up", page_path("dogwalker23")%></li>
+					    <li><%= link_to "24. Emergency", page_path("dogwalker24")%></li>
+
+					    <li><%= link_to "25. Weather", page_path("dogwalker25")%></li>
+					    <li><%= link_to "26. Payday", page_path("dogwalker26")%></li>
+					    <li><%= link_to "27. End", page_path("dogwalker27")%></li>
+
+					  </ul>
+					</div><!--/.well -->
+				</div><!--/span-->
+                <%= yield %>
+            </div><!--/row-->
+        </div>  <!-- continer-fluid -->
+        <hr />
+        <footer>
+            <p>&copy; ePetfolio LLC 2013</p>
+        </footer>
+
+    <!-- Javascripts
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <%= javascript_include_tag "application" %>
+
+  </body>
+</html>

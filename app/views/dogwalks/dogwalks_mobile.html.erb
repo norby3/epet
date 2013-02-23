@@ -3,7 +3,7 @@
 
 	<ul data-role="listview" data-inset="true" id="report_card_list">
 		<% @dogwalks.each do |d| %>
-			<li><a href="#dogwalk_view" id="<%=d.id%>" class="dogwalkDetailsLink"> 
+			<li><a href="dogwalk_view.html" id="<%=d.id%>" class="dogwalkDetailsLink"> 
 				<!-- < %= d.id %>< %= d.pet.name %> < %= d.start.localtime.strftime("%a %b %d %I:%M %Z") %> -->
 				<%= d.pet.name %> <%= d.start.localtime.strftime("%a %b %d") %>
 			</a></li>

@@ -33,6 +33,7 @@ group :assets do
   
 end
 
+gem "high_voltage"   # added 2013-02-22
 gem 'jquery-rails'
 
 # To use ActiveModel has_secure_password
