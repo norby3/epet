@@ -184,7 +184,11 @@ class PeopleController < ApplicationController
       # 2nd iteration sends redirect with custom URL PetOwner://?id=token
       # that should re-open the app - assuming they did these steps from their mobile phone
       #  routes.rb for similar use case --> redirect("PetOwner://epetfolio/%{token}")
-      redirect_to "PetOwner://epetfolio/email_verified"
+      if @person.personas.eql?('Pro_Dog_Walker')
+          redirect_to "DogWalker://epetfolio/email_verified"
+      else
+          redirect_to "PetOwner://epetfolio/email_verified"
+      end
   end
 
   # DELETE /people/1
