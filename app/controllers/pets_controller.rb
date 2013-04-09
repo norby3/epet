@@ -59,8 +59,8 @@ class PetsController < ApplicationController
   # POST /pets.json
   def create
     @pet = Pet.new(params[:pet])
-    if (params[:person_id])
-        @person= Person.find(params[:person_id])
+    if (params[:person_upid])
+        @person= Person.find_by_upid(params[:person_upid])
     else 
         @person = current_user.person
     end
@@ -76,9 +76,12 @@ class PetsController < ApplicationController
               famfrnd.caretakers.build(:pet_id => @pet.id, :primary_role => fandf.category, :status => 'active', :started_at => Time.now)
               famfrnd.save
           end
+          # lil unorthodox to return caretaker + pet + petphoto but is what the petowner app needs
+          @pets = Caretaker.includes(:pet).where(:person_id => @person.id)    
           #format.html { redirect_to @pet, notice: 'Pet was successfully created.' }
           format.html { redirect_to @person, notice: 'Pet added.' }
-          format.json { render json: @pet, status: :created, location: @pet }
+          #format.json { render json: @pet, status: :created, location: @pet }
+          format.json { render json: @pets }
       else
           format.html { render action: "new" }
           format.json { render json: @pet.errors, status: :unprocessable_entity }

@@ -219,7 +219,12 @@ class PeopleController < ApplicationController
       # didn't work 
       #@person = Person.includes(:addresses).find_by_upid(params[:id]).order('addresses.updated_at desc')
       @address = @person.addresses.last
-            
+
+      @pets = Caretaker.includes(:pet).where(:person_id => @person.id)            
+      logger.debug("@pets.empty? = " + @pets.empty?.to_s)
+      if @pets.empty? 
+          @pets = []
+      end
       @family = []
       @friends = []
       @person.person_connections.each do |ff|
@@ -235,18 +240,18 @@ class PeopleController < ApplicationController
       logger.debug("@friends.size = #{@friends.size}")
 
       # a list of pet_ids where chistine is (f&f) caretaker
-      @pets = Caretaker.where(:person_id => @person.id).uniq.pluck(:pet_id)
-      #logger.debug("@pets = " + @pets.to_s)
+      @pet_ids = Caretaker.where(:person_id => @person.id).uniq.pluck(:pet_id)
+      #logger.debug("@pet_ids = " + @pet_ids.to_s)
       
       # always want a set of photos for the user to see
       @photos = ['sample/00.png', 'sample/01.png', 'sample/02.png', 'sample/03.png', 'sample/04.png', 'sample/05.png',
         'sample/06.png', 'sample/07.png', 'sample/08.png', 'sample/09.png', 'sample/10.png', 'sample/11.png']
       
-      logger.debug "@pets.size = #{@pets.size}"
-      if @pets.size > 0
+      logger.debug "@pet_ids.size = #{@pet_ids.size}"
+      if @pet_ids.size > 0
           # if there are any real photos, add them starting at beginning of the array
-          #@photos = Petphoto.where(:pet_id => @pets).order("created_at DESC").uniq.pluck(:image)
-          petphotos = Petphoto.where(:pet_id => @pets).order("created_at DESC").uniq(:image)
+          #@photos = Petphoto.where(:pet_id => @pet_ids).order("created_at DESC").uniq.pluck(:image)
+          petphotos = Petphoto.where(:pet_id => @pet_ids).order("created_at DESC").uniq(:image)
           x = 0
           logger.debug "petphotos size = " + petphotos.size.to_s
           if petphotos && petphotos.size > 0
@@ -257,15 +262,25 @@ class PeopleController < ApplicationController
               end
           end
       end
-      @slides = []
-      1.upto(27) do |n|
-        @slides << n.to_s + ".png"
-      end
-      # working version before adding addresses
-      #render json: {:person => @person, :family => @family, :friends => @freinds, :pets => @pets, :photos => @photos, :adwsg_slides => @slides }, :layout => false
 
-      #render json: {:person => @person.as_json(:include => :addresses), :family => @family, :friends => @freinds, :pets => @pets, :photos => @photos, :adwsg_slides => @slides }, :layout => false
-      render json: {:person => @person, :address => @address, :family => @family, :friends => @freinds, :pets => @pets, :photos => @photos, :adwsg_slides => @slides }, :layout => false
+      # getting dogwalks for this person for any of this person's pet(s)
+      # why the OR ?  because this person might have walked a family&friend dog
+      #
+      #@report_cards = Dogwalk.order("updated_at desc").where("pet_id IN (?) AND stop IS NOT NULL", @pets)
+      @report_cards = Dogwalk.order("updated_at desc").where("(person_id = ? OR pet_id IN (?)) AND stop IS NOT NULL", @person.id, @pets)
+      # @dogwalks = Dogwalk.order("updated_at desc").where("pet_id IN (?) AND stop IS NULL", @pets)
+      @dogwalks = Dogwalk.order("updated_at desc").where("(person_id = ? OR pet_id IN (?)) AND stop IS NULL", @person.id, @pets)
+      
+      render json: {:person       => @person, 
+                    :address      => @address, 
+                    :family       => @family, 
+                    :friends      => @friends, 
+                    #:pets         => @pets.to_json(:include => {:pet => {:include => :petphotos}}),
+                    :pets         => @pets,              # uses as_json in models Caretaker and Pet
+                    :photos       => @photos, 
+                    :report_cards => @report_cards, 
+                    :dogwalks     => @dogwalks }, 
+            :layout => false
   end
 
   # if the pro mobile user verified their email - status = "active mobile"

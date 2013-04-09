@@ -19,4 +19,10 @@ class Dogwalk < ActiveRecord::Base
       end
   end
 
+  # for json rendering
+  def as_json(options={})
+      # super(:include => {:pet => {:include => :petphotos }})
+      super(:include => [:petphoto, :person, {:pet => {:include => :petphotos }} ])
+  end  
+
 end

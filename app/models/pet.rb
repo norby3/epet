@@ -8,4 +8,9 @@ class Pet < ActiveRecord::Base
     
     validates_presence_of :name
 
+    # for json rendering
+    def as_json(options={})
+        super(:include => :petphotos)
+    end
+
 end

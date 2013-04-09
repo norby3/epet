@@ -19,4 +19,12 @@ class Caretaker < ActiveRecord::Base
       where("caretakers.primary_role = 'Client'")
     end    
 
+    # for json rendering
+    def as_json(options={})
+        super(:include => {:pet => {:include => :petphotos }})
+        
+        #super(:include => {:pet => {:include => :petphotos => { only: [:pet_id, :image]} }})
+        #super(:include => {:pet => {:include => petphotos: { only: [:pet_id, :image, :status] } }})
+    end
+
 end
