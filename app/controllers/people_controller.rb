@@ -86,8 +86,9 @@ class PeopleController < ApplicationController
   #  create two objects Person and Device - Person object will be mostly blank
   def create_mobile
     @person = Person.new(params[:person])
-    @person.first_name = @person.devices[0].name.split(/\b/)[0]
-    @person.last_name = @person.devices[0].name.split(/\b/)[2]
+    # device.name deprecated in phonegap
+    #@person.first_name = @person.devices[0].name.split(/\b/)[0]
+    #@person.last_name = @person.devices[0].name.split(/\b/)[2]
 
     @person.status = "new mobile"
     if @person.save
@@ -115,7 +116,7 @@ class PeopleController < ApplicationController
      @invitor = Person.find_by_email(@invitation.requestor_email)
      #  create the person & device
      @person = Person.new(params[:person])
-     @person.first_name = @person.devices[0].name.split(/\b/)[0]
+     #@person.first_name = @person.devices[0].name.split(/\b/)[0]
      @person.email = @invitation.email
      @person.status = "active mobile"
 
@@ -225,6 +226,14 @@ class PeopleController < ApplicationController
       if @pets.empty? 
           @pets = []
       end
+      
+      @partners = []
+      # no moralizing - if there are more than one partners so be it
+      @partner_connections = @person.person_connections.where(:category => 'Spouse-Partner', :status => 'active')      
+      @partner_connections.each do |pt|
+          partn = Person.find(pt.person_b_id)
+          @partners << { partn.email => partn.id }
+      end
       @family = []
       @friends = []
       @person.person_connections.each do |ff|
@@ -238,6 +247,8 @@ class PeopleController < ApplicationController
       end
       logger.debug("@family.size = #{@family.size}")
       logger.debug("@friends.size = #{@friends.size}")
+      # people invited but who have not yet accepted
+      @invited = Invitation.where(:requestor_email => @person.email, :status => 'invited')
 
       # a list of pet_ids where chistine is (f&f) caretaker
       @pet_ids = Caretaker.where(:person_id => @person.id).uniq.pluck(:pet_id)
@@ -273,8 +284,10 @@ class PeopleController < ApplicationController
       
       render json: {:person       => @person, 
                     :address      => @address, 
+                    :partners     => @partners,
                     :family       => @family, 
                     :friends      => @friends, 
+                    :invited      => @invited,
                     #:pets         => @pets.to_json(:include => {:pet => {:include => :petphotos}}),
                     :pets         => @pets,              # uses as_json in models Caretaker and Pet
                     :photos       => @photos, 
@@ -329,6 +342,7 @@ class PeopleController < ApplicationController
       logger.debug "pro_mobile_user_updates end"
   end
 
+  # called by PetOwner app - my_pet_pros.js
   def my_pet_pros 
       @person = Person.find(params[:person_id])
       @pro_connections = @person.person_connections.where(:category => ['Dog Walk Client', 'Groomer Client', 'Boarding Client', 'Veterinary Client'])
