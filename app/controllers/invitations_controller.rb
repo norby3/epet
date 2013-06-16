@@ -1,27 +1,27 @@
 class InvitationsController < ApplicationController
     include FamilyAndFriends
     
-  # GET /invitations
-  # GET /invitations.json
-  def index
-    @invitations = Invitation.all
+    # GET /invitations
+    # GET /invitations.json
+    def index
+        @invitations = Invitation.all
 
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @invitations }
+        respond_to do |format|
+          format.html # index.html.erb
+          format.json { render json: @invitations }
+        end
     end
-  end
 
-  # GET /invitations/1
-  # GET /invitations/1.json
-  def show
-    @invitation = Invitation.find(params[:id])
+    # GET /invitations/1
+    # GET /invitations/1.json
+    def show
+        @invitation = Invitation.find(params[:id])
 
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @invitation }
+        respond_to do |format|
+          format.html # show.html.erb
+          format.json { render json: @invitation }
+        end
     end
-  end
 
     # GET /invitations/new
     # GET /invitations/new.json
@@ -55,7 +55,6 @@ class InvitationsController < ApplicationController
             @invitation.requestor_email = params[:invitation][:email]
         end
 
-
         # what about the scenario where a user forgets that they already signed up?
 
         @known_user_being_invited = User.where(:email => params[:invitation][:email], :status => 'active').first
@@ -76,7 +75,9 @@ class InvitationsController < ApplicationController
             # does the person being invited already exist in epet?
             #@invite_to_known_user = User.find_by_email(@invitation.email)
             #UserMailer.invitation_confirmation(current_user, @invitation, @invite_to_known_user).deliver
-            UserMailer.invitation_confirmation(current_user, @invitation).deliver
+            Spawnling.new do
+                UserMailer.invitation_confirmation(current_user, @invitation).deliver
+            end
             if current_user
                 redirect_to person_path(current_user.person.id), :notice => "Invite sent."
             else
@@ -112,157 +113,225 @@ class InvitationsController < ApplicationController
     end
 
 
-  # PUT /invitations/1
-  # PUT /invitations/1.json
-  def update
-    #@invitation = Invitation.find(params[:id])
-    @invitation = Invitation.find_by_verify_email_token!(params[:id])
-    if @invitation
-        @invitation.status = 'email verified'
-        @invitation.save!
-        if current_user
-            # ????
-        else 
-            redirect_to new_user_url(:email => @invitation.email)
+    # PUT /invitations/1
+    # PUT /invitations/1.json
+    def update
+        #@invitation = Invitation.find(params[:id])
+        @invitation = Invitation.find_by_verify_email_token!(params[:id])
+        if @invitation
+            @invitation.status = 'email verified'
+            @invitation.save!
+            if current_user
+                # ????
+            else 
+                redirect_to new_user_url(:email => @invitation.email)
+            end
         end
     end
-  end
 
-  # DELETE /invitations/1
-  # DELETE /invitations/1.json
-  def destroy
-    @invitation = Invitation.find(params[:id])
-    @invitation.destroy
+    # DELETE /invitations/1
+    # DELETE /invitations/1.json
+    def destroy
+        @invitation = Invitation.find(params[:id])
+        @invitation.destroy
 
-    respond_to do |format|
-      format.html { redirect_to invitations_url }
-      format.json { head :no_content }
+        respond_to do |format|
+          format.html { redirect_to invitations_url }
+          format.json { head :no_content }
+        end
     end
-  end
   
-  def family_friends_mobile 
-    @person = Person.find(params[:person_id])
-    @partners = @person.person_connections.where(:category => 'Spouse-Partner', :status => 'active')
-    @famandfrnds = @person.person_connections.where(:category => ['Family', 'Friend', ''], :status => 'active')
+    def family_friends_mobile 
+        @person = Person.find(params[:person_id])
+        @partners = @person.person_connections.where(:category => 'Spouse-Partner', :status => 'active')
+        @famandfrnds = @person.person_connections.where(:category => ['Family', 'Friend', ''], :status => 'active')
 
-    # should this be person_id or email??
-    @invitations = Invitation.where(:requestor_email => @person.email, :status => 'invited')
+        # should this be person_id or email??
+        @invitations = Invitation.where(:requestor_email => @person.email, :status => 'invited')
 
-    render :layout => false
-  end
-
-  def clients_dogwalk
-    @person = Person.find(params[:id])
-
-    @pro_connections = @person.person_connections.where(:category => 'Dog Walk Client', :status => 'active')
-    @clients = []
-    @pro_connections.each do |pc|
-        @clients << Person.find(pc.person_b_id)
+        render :layout => false
     end
-    logger.debug("@clients.size = #{@clients.size}")
 
-    @invitations = Invitation.where(:requestor_email => @person.email, :status => 'invited')
-    render json: {:person => @person, :clients => @clients, :invitations => @invitations }, :layout => false    
-  end
+    def clients_dogwalk
+        @person = Person.find(params[:id])
 
-  def create_mobile 
-      logger.debug("create_mobile start")
-      
-      @invitation = Invitation.new(params[:invitation])
-      # work around: setting the device's unique user id (uuid) to ip_address
-      @invitation.verify_email_sent_at = Time.zone.now
+        @pro_connections = @person.person_connections.where(:category => 'Dog Walk Client', :status => 'active')
+        @clients = []
+        @pro_connections.each do |pc|
+            @clients << Person.find(pc.person_b_id)
+        end
+        logger.debug("@clients.size = #{@clients.size}")
 
-      @known_user_being_invited = Person.where(:email => params[:invitation][:email], :status => 'active mobile').first
-      if @known_user_being_invited
-          @invitation.existing_user = 'true' 
-      else 
-          @invitation.existing_user = 'false'
-      end
+        @invitations = Invitation.where(:requestor_email => @person.email, :status => 'invited')
+        render json: {:person => @person, :clients => @clients, :invitations => @invitations }, :layout => false    
+    end
 
-      # check for duplicate
-      @duplicate = Invitation.where(:email => params[:invitation][:email], :requestor_email => @invitation.requestor_email).first
-      if @duplicate
-          @duplicate.request_count += 1
-          @duplicate.save
-          UserMailer.mobile_invitation_confirmation(@invitation.requestor_email, @duplicate).deliver if @duplicate.request_count < 3
-          #redirect_to person_path(current_user.person.id), :notice => "Duplicate Invite"
-      elsif @invitation.save
-          UserMailer.mobile_invitation_confirmation(@invitation.requestor_email, @invitation).deliver
-      end
+    def create_mobile 
+        logger.debug("create_mobile start")
 
-      head :created
-      logger.debug("create_mobile end")
-  end
+        @invitation = Invitation.new(params[:invitation])
+        # work around: setting the device's unique user id (uuid) to ip_address
+        @invitation.verify_email_sent_at = Time.zone.now
 
-  # similar to above (create_mobile)
-  # should rename "create_mobile" to pet_owner_inviting_friend_or_fam
-  # dogwalker entered client's email address - form fields
-  def dogwalker_inviting_client
-      logger.debug("dogwalker_inviting_client start")
-      @invitation = Invitation.new(params[:invitation])
-      # work around: setting the device's unique user id (uuid) to ip_address
-      @invitation.verify_email_sent_at = Time.zone.now
+        @known_user_being_invited = Person.where(:email => params[:invitation][:email], :status => 'active mobile').first
+        if @known_user_being_invited
+            @invitation.existing_user = 'true' 
+        else 
+            @invitation.existing_user = 'false'
+        end
 
-      # is the person being invited already in epetfolio?
-      @known_user_being_invited = Person.where(:email => params[:invitation][:email], :status => 'active mobile').first
-      if @known_user_being_invited
-          @invitation.existing_user = 'true' 
-      else 
-          @invitation.existing_user = 'false'
-      end
+        # check for duplicate
+        @duplicate = Invitation.where(:email => params[:invitation][:email], :requestor_email => @invitation.requestor_email).first
+        if @duplicate
+            @duplicate.request_count += 1
+            @duplicate.save
+            if @duplicate.request_count < 3
+                Spawnling.new do
+                    UserMailer.mobile_invitation_confirmation(@invitation.requestor_email, @duplicate).deliver
+                end
+            end
+            #redirect_to person_path(current_user.person.id), :notice => "Duplicate Invite"
+        elsif @invitation.save
+            # UserMailer.mobile_invitation_confirmation(@invitation.requestor_email, @invitation).deliver
+            Spawnling.new do
+                UserMailer.mobile_invitation_confirmation(@invitation.requestor_email, @invitation).deliver
+                logger.info("UserMailer finished")
+            end
+        end
+        @invited = Invitation.where(:requestor_email => @invitation.requestor_email, :status => 'invited')
+        render json: @invited, :layout => false
+    end
 
-      # check for duplicate invitation - want to avoid badgering
-      @duplicate = Invitation.where(:email => params[:invitation][:email], :requestor_email => @invitation.requestor_email).first
-      if @duplicate
-          @duplicate.request_count += 1
-          @duplicate.save
-          UserMailer.dogwalker_inviting_client(@invitation.requestor_email, @duplicate).deliver if @duplicate.request_count < 3
-          #redirect_to person_path(current_user.person.id), :notice => "Duplicate Invite"
-      elsif @invitation.save
-          UserMailer.dogwalker_inviting_client(@invitation.requestor_email, @invitation).deliver
-      end
+    # general notes about invitations - over many months have evolved this functionality
+    #  on 2013-04-23 started creating private methods to handle common functions
+    #  basic flow:
+    #  1. put the form fields into a new Invitation obj
+    #  2. determine if the person being invited is already known to epetfolio - known_user or @invitation.existing_user
+    #  3. determine if this invitation is a duplicate - don't want one user annoying or stalking another 
+    #  4. return json of all such outstanding invitations
+    
+    # similar to above (create_mobile)
+    # should rename "create_mobile" to pet_owner_inviting_friend_or_fam
+    # dogwalker entered client's email address - form fields
+    def dogwalker_inviting_client
+        logger.debug("dogwalker_inviting_client start")
+        @invitation = Invitation.new(params[:invitation])
+        # work around: setting the device's unique user id (uuid) to ip_address
+        @invitation.verify_email_sent_at = Time.zone.now
 
-      head :created
-      logger.debug("dogwalker_inviting_client end")      
-  end
+        # is the person being invited already in epetfolio?
+        @known_user_being_invited = Person.where(:email => params[:invitation][:email], :status => 'active mobile').first
+        if @known_user_being_invited
+            @invitation.existing_user = 'true' 
+        else 
+            @invitation.existing_user = 'false'
+        end
 
-  # takes a unique invitation token ( params[:verify_email_token] ) and updates the row's status 
-  def accept_invitation_existing_user
-      #  find and update the invitation
-      @invitation = Invitation.find_by_verify_email_token(params[:token])
-      @invitation.update_attributes(:status => "accepted")
-      #  find the two people
-      @invitor = Person.where(:email => @invitation.requestor_email, :status => 'active mobile').order('updated_at DESC').first!
-      @invitee = Person.where(:email => @invitation.email, :status => 'active mobile').order('updated_at DESC').first!
-      #  create the first person_connection 
-      @invitor.person_connections.build(:person_a_id => self, :person_b_id => @invitee.id,
+        # check for duplicate invitation - want to avoid badgering
+        @duplicate = Invitation.where(:email => params[:invitation][:email], :requestor_email => @invitation.requestor_email).first
+        if @duplicate
+            @duplicate.request_count += 1
+            @duplicate.save
+            if (@duplicate.request_count < 3)
+                Spawnling.new do
+                    UserMailer.dogwalker_inviting_client(@invitation.requestor_email, @duplicate).deliver
+                end
+            end
+            #redirect_to person_path(current_user.person.id), :notice => "Duplicate Invite"
+        elsif @invitation.save
+            Spawnling.new do
+                UserMailer.dogwalker_inviting_client(@invitation.requestor_email, @invitation).deliver
+            end
+        end
+        # return value is all the open invitations
+        @invitations = Invitation.where(:requestor_email => @invitation.requestor_email, :status => 'invited')
+        render json: @invitations, :layout => false
+    end
+
+    # added 2013-04-23 - pet owner is inviting a dog walker - opposite of above
+    def pet_owner_inviting_dogwalker
+        logger.debug("pet_owner_inviting_dogwalker start")
+        @invitation = Invitation.new(params[:invitation])
+        # work around: setting the device's unique user id (uuid) to ip_address
+        @invitation.verify_email_sent_at = Time.zone.now
+        
+        #@invitation.existing_user = known_user(params[:invitation][:email])
+        @known_user_being_invited = Person.where(:email => params[:invitation][:email], :status => 'active mobile').first
+        if @known_user_being_invited
+            @invitation.existing_user = 'true' 
+        else 
+            @invitation.existing_user = 'false'
+        end
+        logger.debug("pet_owner_inviting_dogwalker debug a : @invitation.existing_user = " + @invitation.existing_user)
+        # check for duplicate invitation - want to avoid badgering
+        @duplicate = Invitation.where(:email => params[:invitation][:email], :requestor_email => @invitation.requestor_email).first
+        if @duplicate
+            @duplicate.request_count += 1
+            @duplicate.save
+            if (@duplicate.request_count < 3)
+                Spawnling.new do
+                    UserMailer.pet_owner_inviting_dogwalker(@invitation.requestor_email, @duplicate).deliver 
+                end
+            end 
+        elsif @invitation.save
+            logger.debug("pet_owner_inviting_dogwalker debug b : @invitation.save")
+            Spawnling.new do
+                UserMailer.pet_owner_inviting_dogwalker(@invitation.requestor_email, @invitation).deliver
+                logger.info("pet_owner_inviting_dogwalker debug b1 : UserMailer finished")
+            end
+        end
+        #logger.debug("pet_owner_inviting_dogwalker end")
+        @invited = Invitation.where(:requestor_email => @invitation.requestor_email, :status => 'invited')
+        render json: @invited, :layout => false
+    end
+
+    # takes a unique invitation token ( params[:verify_email_token] ) and updates the row's status 
+    def accept_invitation_existing_user
+        #  find and update the invitation
+        @invitation = Invitation.find_by_verify_email_token(params[:token])
+        @invitation.update_attributes(:status => "accepted")
+        #  find the two people
+        @invitor = Person.where(:email => @invitation.requestor_email, :status => 'active mobile').order('updated_at DESC').first!
+        @invitee = Person.where(:email => @invitation.email, :status => 'active mobile').order('updated_at DESC').first!
+        #  create the first person_connection 
+        @invitor.person_connections.build(:person_a_id => self, :person_b_id => @invitee.id,
           :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
-      #  create the second (reverse) person_connection 
-      @invitee.person_connections.build(:person_a_id => self, :person_b_id => @invitor.id,
+        #  create the second (reverse) person_connection 
+        @invitee.person_connections.build(:person_a_id => self, :person_b_id => @invitor.id,
           :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
-      if @invitor.save && @invitee.save 
-#          redirect_to "PetOwner://epetfolio/%{token}"
-          redirect_to "PetOwner://epetfolio/accepted_invite_known_user"
-      else 
-          logger.error("Error accepting f&f invitation")
-      end
-  end
+        if @invitor.save && @invitee.save 
+        #          redirect_to "PetOwner://epetfolio/%{token}"
+            redirect_to "PetOwner://epetfolio/accepted_invite_known_user"
+        else 
+            logger.error("Error accepting f&f invitation")
+        end
+    end
 
     #  from their email inbox, the user has clicked on "Accept Invite" link from a f&f 
     #  check if the invitation has already been accepted
     #  check if the request is from a mobile device or a laptop 
     #     (should click the link from the mobile device where the epet app is installed)
+    #  expand this method to handle dog walkers accepting invite
     def preliminary_accept_invite 
+        logger.debug("request.fullpath = " + request.fullpath)
         #  is request from mobile device?
         if request.user_agent =~ /Mobile|webOS/
             #  find the invitation
             @invitation = Invitation.find_by_verify_email_token(params[:token])
             if @invitation.status.eql?('invited')
-                # good 
-                redirect_to "PetOwner://epetfolio/#{params[:token]}"
+                # good
+                if request.fullpath =~ /dogwalker_accepting_pet_owner_invitation/ 
+                    redirect_to "DogWalker://epetfolio/#{params[:token]}"
+                else 
+                    redirect_to "PetOwner://epetfolio/#{params[:token]}"
+                end
             elsif @invitation.status.eql?('accepted')
                 # bad dup
-                redirect_to "PetOwner://epetfolio/duplicate_accept_invitation"
+                if request.fullpath =~ /dogwalker_accepting_pet_owner_invitation/ 
+                    redirect_to "DogWalker://epetfolio/duplicate_accept_invitation"
+                else 
+                    redirect_to "PetOwner://epetfolio/duplicate_accept_invitation"
+                end
             end
         else 
             # render view preliminary_accept_invite - "Please accept the invite from the mobile device where.."
@@ -277,7 +346,6 @@ class InvitationsController < ApplicationController
     # creates the caretakers (pet connections)
     # returns Person json obj
     def accept_invite
-
         #  find the invitation
         @invitation = Invitation.find_by_verify_email_token(params[:token])
         duplicate_accept_invite = false
@@ -286,7 +354,7 @@ class InvitationsController < ApplicationController
         if @invitation.status.eql?('accepted')
             duplicate_accept_invite = true
         else
-            @invitation.update_attributes(:status => 'accepted')        
+            @invitation.update_attributes(:status => 'accepted')
             #  find the two people
             @invitor = Person.where(:email => @invitation.requestor_email, :status => 'active mobile').order('updated_at DESC').first!
 
@@ -298,35 +366,50 @@ class InvitationsController < ApplicationController
             if !@invitee.status.eql?('active mobile')
                 @invitee.status = 'active mobile'
             end
-
+            logger.debug("debug point alpha - @invitor.id = " + @invitor.id.to_s + "  @invitee.id = " + @invitee.id.to_s)
             #  create the first person_connection 
-            @invitor.person_connections.build(:person_a_id => self, :person_b_id => @invitee.id,
+#            @invitor.person_connections.build(:person_a_id => self, :person_b_id => @invitee.id,
+#                :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
+            @invitor.person_connections.build(:person_a_id => @invitor.id, :person_b_id => @invitee.id,
                 :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
+            logger.debug("debug point beta")
             #  create the second (reverse) person_connection 
-            @invitee.person_connections.build(:person_a_id => self, :person_b_id => @invitor.id,
+            @invitee.person_connections.build(:person_a_id => @invitee.id, :person_b_id => @invitor.id,
                 :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
-
+            logger.debug("debug point delta")
             # add caretaker row for each pet owned by the invitor
             @invitor.caretakers.each do |ct|
                 if ct.primary_role.eql?('Owner')
                     if @invitation.category.eql?('Spouse-Partner')
                         p_role = 'Owner'
-                    elsif @invitation.category.eql?('Family') || @invitation.category.eql?('Friend')  
+                    elsif @invitation.category.eql?('Family') || @invitation.category.eql?('Friend')
                         p_role = @invitation.category
                     else 
-                        p_role = 'Other' 
+                        p_role = 'Other'
                     end
-                    @invitee.caretakers.build(:pet_id => ct.pet_id, :primary_role => p_role, :status => 'active', :started_at => Time.now) 
+                    @invitee.caretakers.build(:pet_id => ct.pet_id, :primary_role => p_role, :status => 'active', :started_at => Time.now)
                 end
             end
-            @invitor.save && @invitee.save 
+            @invitor.save && @invitee.save
         end
 
         if duplicate_accept_invite
             #render json: "duplicate_accept_invite"
             render :json => '{duplicate_accept_invite: true}'
-        elsif @invitee 
-            render json: @invitee
+        elsif @invitee
+            if @invitee.personas =~ /Pro_Dog_Walker/
+                # return to the DogWalker app all the dog walker clients including the one just created
+                logger.debug("accept_invite - invitee is Pro_Dog_Walker - returing @clients as json")
+                @clients = @invitee.peeps.where("person_connections.category = 'Dog Walker'").includes({:pets => :petphotos }, :addresses)
+                render json: {:clients => @clients }, :layout => false
+            elsif @invitor.personas =~ /Pro_Dog_Walker/
+                logger.debug("accept_invite - invitor is Pro_Dog_Walker - returing @pet_pros as json")
+                @pet_pros = @invitee.peeps.where("person_connections.category = 'Dog Walker'").includes({:pets => :petphotos }, :addresses)
+                render json: {:clients => @clients }, :layout => false
+            else 
+                logger.debug("accept_invite - returing @invitee as json")
+                render json: @invitee
+            end
         else
             logger.error("Error accepting f&f invitation")
         end
@@ -334,12 +417,10 @@ class InvitationsController < ApplicationController
 
     # added 2013-02-17 - dog walker app - clients screen - "Clients Invited" list
     def dogwalker_invited
-        
         #@invitations = Invitation.invited_clients_email(params[:email]).select(:email)
         @invitations = Invitation.invitees(params[:email]).select(:email)
         logger.debug("@invitations.to_json = " + @invitations.to_json)
         render json: {:invitations => @invitations }, :layout => false    
-        
     end
 
 end

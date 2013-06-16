@@ -12,7 +12,8 @@ class UserMailer < ActionMailer::Base
         @invitation = invitation
         mail to: invitation.email, :subject => "ePetfolio eMail Confirmation"
     end
-
+    
+    # invite family & friends
     def mobile_invitation_confirmation(current_user, invitation)
         @requestor_email = current_user
         @invitation = invitation
@@ -24,6 +25,13 @@ class UserMailer < ActionMailer::Base
         @invitation = invitation
         mail to: invitation.email, :subject => "ePetfolio Invitation"
     end
+
+    def pet_owner_inviting_dogwalker(current_user, invitation)
+        @requestor_email = current_user
+        @invitation = invitation
+        mail to: invitation.email, :subject => "ePetfolio Invitation"
+    end
+
 
     #  called by Person_Controller.update - mobile app did Verify My Email
     def verify_email_mobile_user(person)

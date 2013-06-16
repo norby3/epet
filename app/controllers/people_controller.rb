@@ -55,14 +55,14 @@ class PeopleController < ApplicationController
     end
   end
 
-  # GET /people/1/edit
-  def edit
-    @person = Person.find(params[:id])
-    respond_to do |format|
-        format.html { render action: "edit", :layout => "with_sidebar" }
-        format.json { render json: @person }
+    # GET /people/1/edit
+    def edit
+        @person = Person.find(params[:id])
+        respond_to do |format|
+            format.html { render action: "edit", :layout => "with_sidebar" }
+            format.json { render json: @person }
+        end
     end
-  end
 
   # POST /people
   # POST /people.json
@@ -80,23 +80,43 @@ class PeopleController < ApplicationController
     end
   end
 
-  #  called by mobile devices during first time the app is used
-  #  the user has just downloaded the app from itunes and installed it
-  #  and they have started it for the first time
-  #  create two objects Person and Device - Person object will be mostly blank
-  def create_mobile
-    @person = Person.new(params[:person])
-    # device.name deprecated in phonegap
-    #@person.first_name = @person.devices[0].name.split(/\b/)[0]
-    #@person.last_name = @person.devices[0].name.split(/\b/)[2]
+    #  called by mobile devices during first time the app is used
+    #  the user has just downloaded the app and installed it
+    #  and they have started it for the first time
+    #  create two objects Person and Device - Person object will be mostly blank
+    def create_mobile
+        @person = Person.new(params[:person])
+        @person.status = "new mobile"
+        # device.name deprecated in phonegap
+        #@person.first_name = @person.devices[0].name.split(/\b/)[0]
+        #@person.last_name = @person.devices[0].name.split(/\b/)[2]
+        # if @person.personas.eql? 'Pro_Dog_Walker'
+        #     # create person_connection to Ben Franklin
+        #     @benf = Person.where(:last_name => 'Franklin', :first_name => 'Ben', :mobile_phone => '(215) 123-4567').first
+        #     @person.person_connections.build(:person_a_id => self, :person_b_id => @benf, :category => 'Dog Walker Sample')
+        #     # create caretaker for Ben Franklin's pet Fido
+        #     @person.caretakers.build(:pet_id => @benf.pets[0].id, :primary_role => 'Dog Walker Sample', :started_at => Time.now)
+        # end
 
-    @person.status = "new mobile"
-    if @person.save
-      render json: @person
-    else
-      render json: @person.errors, status: :unprocessable_entity
+        if @person.save
+            if @person.personas.eql? 'Pro_Dog_Walker'
+                @benf = Person.where(:last_name => 'Franklin (sample)', :first_name => 'Ben', :mobile_phone => '(215) 123-4567').first
+                logger.debug("@benf.id = " + @benf.id.to_s)
+                @person.person_connections.build(:person_a_id => @person.id, :person_b_id => @benf.id, :category => 'Dog Walker Sample')
+                # create caretaker for Ben Franklin's pet Fido
+                @person.caretakers.build(:pet_id => @benf.pets[0].id, :primary_role => 'Dog Walker Sample', :started_at => Time.now)
+                @person.save
+                render json: {:person       => @person,
+                              :clients      => @benf
+                             },
+                      :layout => false
+            else 
+                render json: @person
+            end
+        else
+            render json: @person.errors, status: :unprocessable_entity
+        end
     end
-  end
   
   # ajax json POST request - called by js function initInvitedFamilyFriend()
   # this is a kind of special multi-model create b/c the person has been invited
@@ -143,7 +163,7 @@ class PeopleController < ApplicationController
      else
        puts "create_invited_mobile_user - save - error"
        render json: @person.errors, status: :unprocessable_entity
-     end     
+     end
   end
 
   # PUT /people/1
@@ -166,7 +186,7 @@ class PeopleController < ApplicationController
           end
           format.html { redirect_to @person, notice: 'Profile was saved.' }
           #format.json { head :no_content }
-          format.json { render json: @person }
+          format.json { render json: {:person => @person, :address => @person.addresses[0]} }
       else
         format.html { render action: "edit" }
         format.json { render json: @person.errors, status: :unprocessable_entity }
@@ -227,26 +247,37 @@ class PeopleController < ApplicationController
           @pets = []
       end
       
+      #@partners = []
+      # # no moralizing - if there are more than one partners so be it
+      # @partner_connections = @person.person_connections.where(:category => 'Spouse-Partner', :status => 'active')      
+      # @partner_connections.each do |pt|
+      #     partn = Person.find(pt.person_b_id)
+      #     #@partners << { partn.email => partn.id }
+      #     @partners << { 'email' => partn.email, 'id' => partn.id }
+      # end
       @partners = []
-      # no moralizing - if there are more than one partners so be it
-      @partner_connections = @person.person_connections.where(:category => 'Spouse-Partner', :status => 'active')      
-      @partner_connections.each do |pt|
-          partn = Person.find(pt.person_b_id)
-          @partners << { partn.email => partn.id }
-      end
       @family = []
       @friends = []
-      @person.person_connections.each do |ff|
-          other_person = Person.find(ff.person_b_id)
+      @pet_pros = []
+#      @person.person_connections.each do |ff|
+      @person.person_connections.where(:status => 'active').each do |connection|
+          other_person = Person.find(connection.person_b_id)
           logger.debug("other_person email = #{other_person.email} and id = #{other_person.id}")
-          if ff.category.eql?('Family')
-              @family << { other_person.email => other_person.id }
-          else 
-              @friends << { other_person.email => other_person.id }
+          if connection.category.eql?('Spouse-Partner') 
+              @partners << { 'category' => connection.category, 'email' => other_person.email, 'id' => other_person.id }
+          elsif connection.category.eql?('Family')
+              @family << { 'category' => connection.category, 'email' => other_person.email, 'id' => other_person.id }
+          elsif connection.category.eql?('Friend')
+              @friends << { 'category' => connection.category, 'email' => other_person.email, 'id' => other_person.id }
+          elsif connection.category.eql?('Dog Walker')
+              @pet_pros << { 'category' => connection.category, 'email' => other_person.email, 'id' => other_person.id }
           end
       end
+      logger.debug("@pet_pros.size = #{@pet_pros.size}")
       logger.debug("@family.size = #{@family.size}")
       logger.debug("@friends.size = #{@friends.size}")
+      logger.debug("@partners.size = #{@partners.size}")
+      
       # people invited but who have not yet accepted
       @invited = Invitation.where(:requestor_email => @person.email, :status => 'invited')
 
@@ -278,9 +309,9 @@ class PeopleController < ApplicationController
       # why the OR ?  because this person might have walked a family&friend dog
       #
       #@report_cards = Dogwalk.order("updated_at desc").where("pet_id IN (?) AND stop IS NOT NULL", @pets)
-      @report_cards = Dogwalk.order("updated_at desc").where("(person_id = ? OR pet_id IN (?)) AND stop IS NOT NULL", @person.id, @pets)
+      @report_cards = Dogwalk.order("updated_at desc").where("(person_id = ? OR pet_id IN (?)) AND stop IS NOT NULL AND status = 'active'", @person.id, @pets)
       # @dogwalks = Dogwalk.order("updated_at desc").where("pet_id IN (?) AND stop IS NULL", @pets)
-      @dogwalks = Dogwalk.order("updated_at desc").where("(person_id = ? OR pet_id IN (?)) AND stop IS NULL", @person.id, @pets)
+      @dogwalks = Dogwalk.order("updated_at desc").where("(person_id = ? OR pet_id IN (?)) AND stop IS NULL AND status = 'active'", @person.id, @pets)
       
       render json: {:person       => @person, 
                     :address      => @address, 
@@ -292,7 +323,8 @@ class PeopleController < ApplicationController
                     :pets         => @pets,              # uses as_json in models Caretaker and Pet
                     :photos       => @photos, 
                     :report_cards => @report_cards, 
-                    :dogwalks     => @dogwalks }, 
+                    :dogwalks     => @dogwalks,
+                    :pet_pros     => @pet_pros },
             :layout => false
   end
 
@@ -341,6 +373,79 @@ class PeopleController < ApplicationController
            }, :layout => false
       logger.debug "pro_mobile_user_updates end"
   end
+
+    # refactor - 2013-05-06
+    # updating DogWalker app to be similar to PetOwner app - store objects in localStorage
+    #   person, address, clients, pets, dogwalks, report_cards
+    # if the pro mobile user verified their email - status = "active mobile"
+    #  find all Clients (people & pets) & related photos
+    # no view or html - returns json 
+    #  list of image file names on s3
+    def pro_mobile_user_updates2
+      logger.debug "pro_mobile_user_updates2 start"
+      @person = Person.find_by_upid(params[:id])
+      #@address = @person.addresses.last
+      # @clients = []
+      # @person.person_connections.each do |pc|
+      #     #other_person = Person.find(pc.person_b_id)
+      #     @other_person = Person.includes({:pets => :petphotos }, :addresses).find(pc.person_b_id)
+      #     #logger.debug("other_person email = #{@other_person.email} and id = #{@other_person.id}")
+      #     if pc.category.eql?('Dog Walker')
+      #         #@clients << { other_person.email => other_person.id }
+      #         @clients << @other_person
+      #     end
+      # end
+      
+      # the like also picks up Dog Walker Sample
+      @clients = @person.peeps.where("person_connections.category like 'Dog Walker%'").includes({:pets => :petphotos }, :addresses)
+
+      logger.debug("@clients.size = #{@clients.size}")
+
+      @invitations = Invitation.select(:email).where(:requestor_email => @person.email, :status => 'invited')
+      logger.debug("@invitations = " + @invitations.to_json)
+      # a list of pet_ids where chistine is (f&f) caretaker
+      #  ????
+      #@pets = Caretaker.where(:person_id => @person.id).uniq.pluck(:pet_id)
+      #logger.debug("@pets = " + @pets.to_s)
+      #logger.debug "@pets.size = #{@pets.size}"
+      #render json: {:person => @person, :clients => @clients, :pets => @pets }, :layout => false
+      logger.debug "@clients = " + @clients.to_json(:only => [:first_name, :last_name, :email, :mobile_phone, :status, :id, :upid, :image, :timezone], 
+           :include => { :pets => { :only => [:name, :breed, :gender, :weight, :birthdate], :include => { :petphotos => { :only => [:id, :image] }}},
+                         :addresses => { :only => [:line1, :line2, :locality] }
+      } )
+
+      @pets = []
+      #@caretaker_to_these_pets = Caretaker.where(:person_id => @person.id)
+      
+      @report_cards = Dogwalk.order("updated_at desc").where("person_id = ? AND stop IS NOT NULL AND status = 'active'", @person.id)
+      @dogwalks = Dogwalk.order("updated_at desc").where("person_id = ? AND stop IS NULL AND status = 'active'", @person.id)
+      
+
+      # render json: {:person => @person, :clients => @clients, :pets => @pets }, :layout => false
+      # render json: 
+      #      {:person => @person,
+      #       :clients => @clients.to_json(:only => [:first_name, :last_name, :email, :mobile_phone, :status, :id, :upid, :image], 
+      #            :include => { :pets => { :only => [:id, :name, :breed, :gender, :weight, :birthdate], :include => { :petphotos => { :only => [:id, :image] }}},
+      #                          :addresses => { :only => [:line1, :line2, :locality] }
+      #                        } ),
+      #       :invitations => @invitations.to_json
+      #      }, :layout => false
+           
+       render json: {:person       => @person,
+                     #:address      => @address,
+                     :clients      => @clients,
+                     :invitations  => @invitations,
+                     #:pets         => @pets.to_json(:include => {:pet => {:include => :petphotos}}),
+                     :pets         => @pets,              # uses as_json in models Caretaker and Pet
+                     #:photos       => @photos, 
+                     :report_cards => @report_cards,
+                     :dogwalks     => @dogwalks
+                    },
+             :layout => false
+           
+        logger.debug "pro_mobile_user_updates2 end"
+    end
+
 
   # called by PetOwner app - my_pet_pros.js
   def my_pet_pros 

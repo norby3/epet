@@ -60,3 +60,6 @@ gem 'simple_form'
 gem 'possessive'
 # gem 'exifr'  wouldn't read s3 jpg files...
 
+gem 'spawnling'  # added 2013-04-20  don't wait for email to be sent
+
+

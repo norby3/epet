@@ -1,6 +1,6 @@
 
 <p>Hello from ePetfolio</p>
-<p>You have been invited to join the professional network of the dog walker <%= @requestor_email %></p>
+<p>You have been invited to join the professional network of the dog walker <%= @invitation.requestor_email %></p>
 
 <br />
 
@@ -11,8 +11,8 @@
 
 <% else %>  <!-- person is NOT member already, give them links to download the app -->
     <h2>Step #1 - Install the app on your mobile phone</h2>
-    <p><%= link_to "(fix this) Download the ePetfolio app for iPhone", "iphone-foobar.com" %></p>
-    <p><%= link_to "(fix this) Download the ePetfolio app for Android", "android-foobar.com" %></p>
+    <p><%= link_to "Download the ePetfolio Pet Owner app for iPhone", "https://itunes.apple.com/us/app/petowner/id588784858?mt=8#" %></p>
+    <p><%= link_to "Download the ePetfolio Pet Owner app for Android", "https://play.google.com/store/apps/details?id=com.epetfolio.PetOwner&feature=more_from_developer#?t=W251bGwsMSwyLDEwMiwiY29tLmVwZXRmb2xpby5QZXRPd25lciJd" %></p>
     <br />
     <h2>Step #2 - Accept the invitation by clicking the link below</h2>
     <p>Be sure to do this from your mobile phone</p>

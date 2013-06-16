@@ -49,23 +49,23 @@ class DogwalksController < ApplicationController
     end
   end
 
-  # POST /dogwalks
-  # POST /dogwalks.json
-  def create
-    @dogwalk = Dogwalk.new(params[:dogwalk])
+    # POST /dogwalks
+    # POST /dogwalks.json
+    def create
+        @dogwalk = Dogwalk.new(params[:dogwalk])
 
-    respond_to do |format|
-      if @dogwalk.save
-        #format.html { redirect_to @dogwalk, notice: 'Dogwalk was successfully created.' }
-        format.html { redirect_to person_path(current_user.person.id), notice: "Dogwalk saved"}
-        #format.json { render json: @dogwalk, status: :created, location: @dogwalk }
-        format.json { render json: @dogwalk }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @dogwalk.errors, status: :unprocessable_entity }
-      end
+        respond_to do |format|
+            if @dogwalk.save
+                #format.html { redirect_to @dogwalk, notice: 'Dogwalk was successfully created.' }
+                format.html { redirect_to person_path(current_user.person.id), notice: "Dogwalk saved"}
+                #format.json { render json: @dogwalk, status: :created, location: @dogwalk }
+                format.json { render json: @dogwalk }
+            else
+                format.html { render action: "new" }
+                format.json { render json: @dogwalk.errors, status: :unprocessable_entity }
+            end
+        end
     end
-  end
 
   # PUT /dogwalks/1
   # PUT /dogwalks/1.json
@@ -127,4 +127,19 @@ class DogwalksController < ApplicationController
       render "dogwalks_mobile", :layout => false
   end
   
+    # set the dogwalk.status = 'cancel'
+    def cancel
+        @dogwalk = Dogwalk.find(params[:dogwalk_id])
+        @person = Person.find_by_upid(params[:upid])
+        if @dogwalk.person_id.eql?(@person.id)
+            @dogwalk.status = 'cancel'
+            @dogwalk.save
+        end
+        head :ok, :layout => false
+    end
+
 end
+
+
+
+

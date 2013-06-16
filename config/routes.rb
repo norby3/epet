@@ -1,10 +1,14 @@
 Epet5::Application.routes.draw do
 
+  post 'dw_cancel' => 'dogwalks#cancel'                                  # 2013-06-15
+
+  post "pet_pro_invite" => "invitations#pet_owner_inviting_dogwalker"    # 2013-04-23
+
   match "client_and_pets/:id" => "people#client_and_pets"
   match "my_pet_pros" => "people#my_pet_pros"
   match "clients_dogwalk/:id" => "invitations#clients_dogwalk"
 
-  # added 2013-02-17
+  # added 2013-02-17  means dogwalker invited a client
   #match "dogwalker_invited/:email" => "invitations#dogwalker_invited"
   match "dogwalker_invited" => "invitations#dogwalker_invited"
 
@@ -14,7 +18,9 @@ Epet5::Application.routes.draw do
   # adding some functionality to this request - try to prevent duplicate accept invites - controller will redirect
   match "friendsfamily/:token" => "invitations#preliminary_accept_invite"
   match "client_accepting_dogwalker_invitation/:token" => "invitations#preliminary_accept_invite"
-  
+
+  match "dogwalker_accepting_pet_owner_invitation/:token" => "invitations#preliminary_accept_invite"    # 2013-04-28
+
   post "accept_invite" => "invitations#accept_invite"
 
   match "verify_email_mobile_user" => "people#verify_email_mobile"
@@ -22,7 +28,8 @@ Epet5::Application.routes.draw do
   post "new_mobile_user" => "people#create_mobile"
   get "checkForMobileUserUpdates" => "people#mobile_user_updates"
   get "checkForProMobileUserUpdates" => "people#pro_mobile_user_updates"
-
+  get "checkForProMobileUserUpdates2" => "people#pro_mobile_user_updates2"    # 2013-05-06  called by DogWalker app
+  
   get "report_cards" => "dogwalks#dogwalks_mobile"
   match "dogwalk_mobile/:id" => "dogwalks#show_mobile"
   get "pro_dogwalker_report_cards" => "dogwalks#pro_dogwalker_report_cards"

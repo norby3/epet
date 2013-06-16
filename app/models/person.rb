@@ -2,7 +2,7 @@ class Person < ActiveRecord::Base
     
     belongs_to :user
     has_many :addresses, :as => :addressable
-
+    
     has_many :caretakers
     has_many :pets, :through => :caretakers
     has_many :devices
@@ -18,7 +18,9 @@ class Person < ActiveRecord::Base
          :foreign_key => :person_b_id, :dependent => :destroy)
     #has_many :persons, :through => :person_connections, :source => :person_b
     has_many :familyandfriends, :through => :person_connections, :source => :person_b
-
+    
+    # 2013-05-22
+    has_many :peeps, :through => :person_connections, :source => :person_b
 
     def generate_upid
         self.upid = SecureRandom.urlsafe_base64
@@ -29,5 +31,18 @@ class Person < ActiveRecord::Base
             self[column] = SecureRandom.urlsafe_base64
         end
     end
+
+    def as_json(options={})
+        #super(:include => :petphotos)
+        super( :only => [:first_name, :last_name, :email, :mobile_phone, :status, :id, :upid, :image, :timezone, :personas],
+            :include => { :pets => { :only => [:id, :name, :breed, :gender, :weight, :birthdate], 
+                                  :include => { :petphotos => { :only => [:id, :image] }}},
+                          :addresses => { :only => [:id, :line1, :line2, :locality, :region, :postcode] }
+                        } )
+    end
     
 end
+
+
+
+
