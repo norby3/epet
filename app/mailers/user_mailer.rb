@@ -19,24 +19,32 @@ class UserMailer < ActionMailer::Base
         @invitation = invitation
         mail to: invitation.email, :subject => "ePetfolio Invitation"
     end
+    # 2013-07-10  replaces above
+    def create_invitation_from_pet_owner(current_user, invitation)
+        @invitor_email = current_user
+        @invitation = invitation
+        mail to: invitation.invitee_email, :subject => "ePetfolio Invitation"
+    end
+
+
     
     def dogwalker_inviting_client(current_user, invitation)
         @requestor_email = current_user
         @invitation = invitation
-        mail to: invitation.email, :subject => "ePetfolio Invitation"
+        mail to: invitation.invitee_email, :subject => "ePetfolio Invitation"
     end
 
     def pet_owner_inviting_dogwalker(current_user, invitation)
         @requestor_email = current_user
         @invitation = invitation
-        mail to: invitation.email, :subject => "ePetfolio Invitation"
+        mail to: invitation.invitee_email, :subject => "ePetfolio Invitation"
     end
 
 
     #  called by Person_Controller.update - mobile app did Verify My Email
-    def verify_email_mobile_user(person)
-        @person = person
-        mail to: @person.email, :subject => "ePetfolio Email Verification"
+    def verify_email_mobile_user(invitation)
+        @invitation = invitation
+        mail to: @invitation.email, :subject => "ePetfolio Email Verification"
     end
 
 

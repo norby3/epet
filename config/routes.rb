@@ -1,5 +1,9 @@
 Epet5::Application.routes.draw do
 
+  post 'verify_email2' => 'invitations#verify_email2'                    # 2013-06-21   refactoring verify my email function
+  match "verifying_email" => "invitations#verifying_email"               # 2013-06-22   refactoring verify my email function
+  match "verify_email_mobile_user" => "people#verify_email_mobile"       # old way      before refactoring
+
   post 'dw_cancel' => 'dogwalks#cancel'                                  # 2013-06-15
 
   post "pet_pro_invite" => "invitations#pet_owner_inviting_dogwalker"    # 2013-04-23
@@ -16,19 +20,26 @@ Epet5::Application.routes.draw do
   # the operating system should recognize the custom URL PetOwner:// and open PetOwneriOS app
   #match "friendsfamily/:token" => redirect("PetOwner://epetfolio/%{token}")
   # adding some functionality to this request - try to prevent duplicate accept invites - controller will redirect
-  match "friendsfamily/:token" => "invitations#preliminary_accept_invite"
+  #match "friendsfamily/:token" => "invitations#preliminary_accept_invite"
+
+
   match "client_accepting_dogwalker_invitation/:token" => "invitations#preliminary_accept_invite"
 
-  match "dogwalker_accepting_pet_owner_invitation/:token" => "invitations#preliminary_accept_invite"    # 2013-04-28
+  # match "dogwalker_accepting_pet_owner_invitation/:token" => "invitations#preliminary_accept_invite"    # 2013-04-28
+  match "dogwalker_accepting_pet_owner_invitation/:token" => "invitations#accept_invite2"    # 2013-07-04
 
   post "accept_invite" => "invitations#accept_invite"
 
-  match "verify_email_mobile_user" => "people#verify_email_mobile"
-
   post "new_mobile_user" => "people#create_mobile"
   get "checkForMobileUserUpdates" => "people#mobile_user_updates"
+  get "checkForNewMobileUserUpdates" => "people#new_mobile_user_sync"    # 2013-07-06 new called by PetOwner app
+  get "checkForActiveMobileUserUpdates" => "people#active_mobile_user_sync"    # 2013-07-06 new called by PetOwner app
+  
   get "checkForProMobileUserUpdates" => "people#pro_mobile_user_updates"
   get "checkForProMobileUserUpdates2" => "people#pro_mobile_user_updates2"    # 2013-05-06  called by DogWalker app
+
+  get "pro_new_mobile_user_sync" => "people#pro_new_mobile_user_sync"          # 2013-07-10  called by DogWalker app
+  get "pro_active_mobile_user_sync" => "people#pro_active_mobile_user_sync"    # 2013-07-10  called by DogWalker app
   
   get "report_cards" => "dogwalks#dogwalks_mobile"
   match "dogwalk_mobile/:id" => "dogwalks#show_mobile"
@@ -40,6 +51,10 @@ Epet5::Application.routes.draw do
   get "measure/hop"
   get "family_friends" => "invitations#family_friends_mobile"
   post "ff_invite" => "invitations#create_mobile"
+  post "invite_from_pet_owner" => "invitations#create_invitation_from_pet_owner"    # 2013-07-10  called by PetOwner app
+  #get "family_friends2" => "invitations#family_friends_accept_invitation"          # 2013-07-10  link in email 
+  match "friendsfamily2/:token" => "invitations#accept_invite2"                     # 2013-07-10
+
   post "dogwalker_inviting_client" => "invitations#dogwalker_inviting_client"
   
   #match "mperson" => "people#show2"
@@ -70,6 +85,7 @@ Epet5::Application.routes.draw do
       #resources :pictures, :addresses, :dogwalks
       resources :petphotos
   end
+  post "pets2" => "pets#create2"  # added 2013-07-06
 
   get "sessions/new"
 

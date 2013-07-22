@@ -3,7 +3,8 @@
 
 <p>
     <%= link_to "Click here to verify email address", 
-             "#{root_url}verify_email_mobile_user?id=#{@person.comments}"  %>
+             "#{root_url}verifying_email?id=#{@invitation.verify_email_token}"  %>
+
 </p>
 
 <br />

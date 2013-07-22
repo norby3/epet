@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120914013046) do
+ActiveRecord::Schema.define(:version => 20130621150256) do
 
   create_table "addresses", :force => true do |t|
     t.string   "line1"
@@ -110,6 +110,13 @@ ActiveRecord::Schema.define(:version => 20120914013046) do
     t.string   "status",               :default => "invited"
     t.datetime "created_at",                                  :null => false
     t.datetime "updated_at",                                  :null => false
+    t.string   "invitee_email"
+    t.string   "invitee_upid"
+    t.string   "invitee_status"
+    t.string   "invitor_email"
+    t.string   "invitor_upid"
+    t.string   "invitor_status"
+    t.integer  "accept_count"
   end
 
   create_table "people", :force => true do |t|

@@ -5,6 +5,8 @@ class Pet < ActiveRecord::Base
     has_many :people, :through => :caretakers
     has_many :petphotos
     accepts_nested_attributes_for :petphotos
+    accepts_nested_attributes_for :caretakers
+
     has_many :dogwalks
     
     validates_presence_of :name

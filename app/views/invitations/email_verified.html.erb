@@ -1,0 +1,46 @@
+<h2>Wop bop a loo bop a lop bam boom!</h2>
+
+<h2>OK your email has been verified by ePetfolio!</h2>
+<br />
+<% if @person.personas.eql? 'Pro_Dog_Walker' %>
+
+	<p>All of the DogWalker app features are now available -- you may invite clients.</p>
+	<br />
+
+	<p>Next Steps:</p>
+	<ol>
+		<li>Open the DogWalker app again</li>
+		<li>Update your Profile: name, photo</li>
+		<li>Invite your Clients -- it's free!</li>
+	</ol>
+    <% if request.user_agent =~ /Mobile|webOS/ %>
+		<% if @person.devices[0].platform.eql? 'iOS' %>
+		    <p>If you are reading this email on your iPhone, <a href="dogwalker://email_verified">CLICK HERE</a> to open the app.</p>
+		<% end %>
+	<% end %>
+
+
+<% else %>
+
+	<p>All of the PetOwner app features are now available -- you may invite family &amp; friends.</p>
+	<br />
+
+	<p>Next Steps:</p>
+	<ol>
+		<li>Open the PetOwner app again</li>
+		<li>Update your Profile: name, photo</li>
+		<li>Invite your Family &amp; Friends -- it's free!</li>
+	</ol>
+
+    <% if request.user_agent =~ /Mobile|webOS/ %>
+		<% if @person.devices[0].platform.eql? 'iOS' %>
+		    <p>If you are reading this email on your iPhone, <a href="petowner://email_verified">CLICK HERE</a> to open the app.</p>
+		<% end %>
+	<% end %>
+
+<% end %>
+
+<br />
+
+
+

@@ -89,6 +89,40 @@ class PetsController < ApplicationController
     end
   end
 
+    # this is for PetOwner app "add pet" screen
+    # adding a pet can be lil tricky - need to add caretaker role for the 'owner' and all the f&f and pet_pros
+    def create2
+        @person= Person.find_by_upid(params[:person_upid])
+        @pet = Pet.new(params[:pet])
+
+        respond_to do |format|
+            if @pet.save
+                @pp = @person.as_json(:include => :addresses)
+                @pp[:pets] = Pet.joins(:caretakers).includes(:petphotos).where("caretakers.primary_role = 'Owner' and caretakers.person_id = ?", @person.id).all.as_json(:include => :petphotos)
+
+                if @person.status.eql? "active mobile"
+                    # add pet to related peeps (f&f, pet_pros)
+                    @person.person_connections.each do |fandf|
+                        famfrnd = Person.find(fandf.person_b_id)
+                        if fandf.category.eql? 'Spouse-Partner'
+                            prim_role = 'Owner'
+                        else   # category in Family, Friend, Dog Walker
+                            prim_role = fandf.category
+                        end
+                        famfrnd.caretakers.build(:pet_id => @pet.id, :primary_role => prim_role, :status => 'active', :started_at => Time.now)
+                        famfrnd.save
+                    end
+                end
+
+                format.json { render json: @pp }
+            else 
+                format.json { render json: @pet.errors, status: :unprocessable_entity }
+            end
+        end
+    end
+
+
+
   # PUT /pets/1
   # PUT /pets/1.json
   def update

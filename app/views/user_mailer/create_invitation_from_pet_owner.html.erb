@@ -1,0 +1,20 @@
+
+<p>Hello from ePetfolio -- <b>Wow this is exciting!!  Wop bop a loo bop a lop bam boom!!</b></p>
+<br />
+<p>You have been invited to join the Family & Friends network of <%= @invitation.invitor_email %></p>
+<br />
+<h2>Accept the invitation by clicking the link below:</h2>
+<%= link_to "Accept ePetfolio Invitation from #{@invitation.invitor_email}", "#{root_url}friendsfamily2/#{@invitation.verify_email_token}" %>
+
+<br />
+<% if @invitation.existing_user.eql?('false') %>   <!-- if person is member already, then they have the app -->
+
+    <h2>Use these links to install the ePetfolio app on your mobile phone/device</h2>
+    <p><%= link_to "Download the ePetfolio Pet Owner app for iPhone", "https://itunes.apple.com/us/app/petowner/id588784858?mt=8#" %></p>
+    <p><%= link_to "Download the ePetfolio Pet Owner app for Android", "https://play.google.com/store/apps/details?id=com.epetfolio.PetOwner&feature=more_from_developer#?t=W251bGwsMSwyLDEwMiwiY29tLmVwZXRmb2xpby5QZXRPd25lciJd" %></p>
+
+<% end %>
+
+<br />
+
+

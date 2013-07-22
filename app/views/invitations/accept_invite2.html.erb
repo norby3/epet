@@ -1,0 +1,22 @@
+
+<h2>Wop bop a loo bop a lop bam boom!</h2>
+
+<p>Hi <%= @invitation.invitee_email %>
+
+<p>Invitation accepted from <%= @invitation.invitor_email %></p>
+
+<% if @person %>
+
+   <p>If you are on your iPhone, <%= link_to 'dogwalker://epetfolio', 'CLICK HERE' %> to open the ePetfolio DogWalker app</p>
+
+<% else %>
+
+   <p>Download one of the ePetfolio apps .... </p>
+
+<% end %>
+
+<br />
+<p>On ePetfolio, inviting a person is like friending somebody on Facebook.  It is a 
+recognition that a person plays a role in caring for your pet.</p>
+
+

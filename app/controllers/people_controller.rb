@@ -182,7 +182,7 @@ class PeopleController < ApplicationController
     respond_to do |format|
       if @person.update_attributes(params[:person])
           if @person.status.eql?("verifying")
-              UserMailer.verify_email_mobile_user(@person).deliver 
+              UserMailer.verify_email_mobile_user(@person).deliver
           end
           format.html { redirect_to @person, notice: 'Profile was saved.' }
           #format.json { head :no_content }
@@ -193,6 +193,7 @@ class PeopleController < ApplicationController
       end
     end
   end
+
   
   #  called when user clicks on link in their email
   def verify_email_mobile
@@ -241,7 +242,7 @@ class PeopleController < ApplicationController
       #@person = Person.includes(:addresses).find_by_upid(params[:id]).order('addresses.updated_at desc')
       @address = @person.addresses.last
 
-      @pets = Caretaker.includes(:pet).where(:person_id => @person.id)            
+      @pets = Caretaker.includes(:pet).where(:person_id => @person.id)
       logger.debug("@pets.empty? = " + @pets.empty?.to_s)
       if @pets.empty? 
           @pets = []
@@ -249,7 +250,7 @@ class PeopleController < ApplicationController
       
       #@partners = []
       # # no moralizing - if there are more than one partners so be it
-      # @partner_connections = @person.person_connections.where(:category => 'Spouse-Partner', :status => 'active')      
+      # @partner_connections = @person.person_connections.where(:category => 'Spouse-Partner', :status => 'active')
       # @partner_connections.each do |pt|
       #     partn = Person.find(pt.person_b_id)
       #     #@partners << { partn.email => partn.id }
@@ -304,7 +305,7 @@ class PeopleController < ApplicationController
               end
           end
       end
-
+      
       # getting dogwalks for this person for any of this person's pet(s)
       # why the OR ?  because this person might have walked a family&friend dog
       #
@@ -327,6 +328,83 @@ class PeopleController < ApplicationController
                     :pet_pros     => @pet_pros },
             :layout => false
   end
+
+    # 2013-07-06  new version of sync where person status = "new mobile" - no invited, f&f or pet_pros
+    # a "new mobile" user can't invite other peeps - so the only pet is their own pet, which is included in person
+    # 2013-07-19  refactored 
+    def new_mobile_user_sync
+        logger.debug "new_mobile_user_sync start"
+        @person = Person.includes(:addresses).find_by_upid(params[:id])    # person includes address and pets - see models/person.rb as_json
+
+        @pp = @person.as_json(:include => :addresses)
+        @pp[:pets] = Pet.joins(:caretakers).includes(:petphotos).where("caretakers.primary_role = 'Owner' and caretakers.person_id = ?", @person.id).all.as_json(:include => {:petphotos => {:only => [ :id, :image ]}})
+
+        @report_cards = Dogwalk.order("updated_at desc").where("person_id = ? AND stop IS NOT NULL AND status = 'active'", @person.id)
+        @dogwalks = Dogwalk.order("updated_at desc").where("person_id = ? AND stop IS NULL AND status = 'active'", @person.id)
+        logger.debug "new_mobile_user_sync end - next step is render"
+        render json: {:person       => @pp,
+                      :photos       => find_pet_photos(@p),
+                      :report_cards => @report_cards,
+                      :dogwalks     => @dogwalks
+                     },
+              :layout => false
+    end
+
+    # 2013-07-06  new version of sync where person status = "active mobile"
+    # 2013-07-20  adding pets
+    def active_mobile_user_sync
+        logger.debug "active_mobile_user_sync start"
+        @person = Person.find_by_upid(params[:id])    # person includes address and pets - see models/person.rb as_json
+        process_accepted_invitations(@person)   # check for un-processed invitations
+
+        @pp = @person.as_json(:include => :addresses)
+        @pp[:pets] = Pet.joins(:caretakers).includes(:petphotos).where("caretakers.primary_role = 'Owner' and caretakers.person_id = ?", @person.id).all.as_json(:include => {:petphotos => {:only => [ :id, :image ]}})
+
+        @report_cards = Dogwalk.order("updated_at desc").where("person_id = ? AND stop IS NOT NULL AND status = 'active'", @person.id)
+        @dogwalks = Dogwalk.order("updated_at desc").where("person_id = ? AND stop IS NULL AND status = 'active'", @person.id)
+
+        # @family_friends = Person.joins(:person_connections).where('person_connections.category' => ['Family', 'Friend', 'Spouse-Partner'], 'person_connections.person_b_id' => @person.id).all
+        @spouse_partner = Person.joins(:person_connections).where('person_connections.category' => ['Spouse-Partner'], 'person_connections.person_b_id' => @person.id).all
+
+        @family = Person.joins(:person_connections).where('person_connections.category' => ['Family'], 'person_connections.person_b_id' => @person.id).all
+        @family_pets_array = []
+        @family.each do |family|
+            @familyp = family.as_json(:include => :addresses)
+            @familyp[:pets] = Pet.joins(:caretakers).where("caretakers.primary_role = 'Owner' and caretakers.person_id = ?", family.id).all.as_json(:include => {:petphotos => {:only => [ :id, :image ]}})
+            @family_pets_array << @familyp
+        end
+
+        @friends = Person.joins(:person_connections).where('person_connections.category' => ['Friend'], 'person_connections.person_b_id' => @person.id).all
+        @friends_pets_array = []
+        @friends.each do |friend|
+            @friendp = friend.as_json(:include => :addresses)
+            @friendp[:pets] = Pet.joins(:caretakers).where("caretakers.primary_role = 'Owner' and caretakers.person_id = ?", friend.id).all.as_json(:include => {:petphotos => {:only => [ :id, :image ]}})
+            @friends_pets_array << @friendp
+        end
+
+        @pet_pros = Person.joins(:person_connections).where('person_connections.category' => 'Dog Walker', 'person_connections.person_b_id' => @person.id).all
+        logger.debug("@pet_pros.size = #{@pet_pros.size}")
+        logger.debug("@spouse_partner.size = #{@spouse_partner.size} -- @family.size = #{@family.size} -- @friends.size = #{@friends.size}")
+        @invitations = Invitation.where(:invitor_email => @person.email, :status => 'invited')
+
+        @pets = Pet.joins(:caretakers).includes(:petphotos).where("caretakers.person_id = ?", @person.id).all.as_json(:include => {:petphotos => {:only => [ :id, :image ]}})
+
+        logger.debug "active_mobile_user_sync end - next step is render"
+        render json: {:person       => @pp,
+                      :photos       => find_pet_photos(@person),
+                      :report_cards => @report_cards,
+                      :dogwalks     => @dogwalks,
+                      #:family_friends => @family_friends,
+                      #:family_friends => { "Spouse-Partner" => @spouse_partner, "Family" => @family, "Friend" => @friends },
+                      :family_friends => { "Spouse-Partner" => @spouse_partner,
+                                           "Family"         => @family_pets_array,
+                                           "Friends"        => @friends_pets_array },
+                      :invitations  => @invitations,
+                      :pet_pros     => @pet_pros,
+                      :pets         => @pets
+                     },
+              :layout => false
+    end
 
   # if the pro mobile user verified their email - status = "active mobile"
   #  find all Clients (people & pets) & related photos
@@ -384,6 +462,9 @@ class PeopleController < ApplicationController
     def pro_mobile_user_updates2
       logger.debug "pro_mobile_user_updates2 start"
       @person = Person.find_by_upid(params[:id])
+      
+      process_accepted_invitations(@person)   # check for un-processed invitations
+      
       #@address = @person.addresses.last
       # @clients = []
       # @person.person_connections.each do |pc|
@@ -401,7 +482,9 @@ class PeopleController < ApplicationController
 
       logger.debug("@clients.size = #{@clients.size}")
 
-      @invitations = Invitation.select(:email).where(:requestor_email => @person.email, :status => 'invited')
+      # 2013-07-02
+      #@invitations = Invitation.select(:email).where(:requestor_email => @person.email, :status => 'invited')
+      @invitations = Invitation.select(:invitee_email).where(:invitor_email => @person.email, :status => 'invited')
       logger.debug("@invitations = " + @invitations.to_json)
       # a list of pet_ids where chistine is (f&f) caretaker
       #  ????
@@ -414,7 +497,7 @@ class PeopleController < ApplicationController
                          :addresses => { :only => [:line1, :line2, :locality] }
       } )
 
-      @pets = []
+      #@pets = []
       #@caretaker_to_these_pets = Caretaker.where(:person_id => @person.id)
       
       @report_cards = Dogwalk.order("updated_at desc").where("person_id = ? AND stop IS NOT NULL AND status = 'active'", @person.id)
@@ -436,7 +519,7 @@ class PeopleController < ApplicationController
                      :clients      => @clients,
                      :invitations  => @invitations,
                      #:pets         => @pets.to_json(:include => {:pet => {:include => :petphotos}}),
-                     :pets         => @pets,              # uses as_json in models Caretaker and Pet
+                     #:pets         => @pets,              # uses as_json in models Caretaker and Pet
                      #:photos       => @photos, 
                      :report_cards => @report_cards,
                      :dogwalks     => @dogwalks
@@ -444,6 +527,123 @@ class PeopleController < ApplicationController
              :layout => false
            
         logger.debug "pro_mobile_user_updates2 end"
+    end
+
+    # refactor - 2013-07-10
+    # DogWalker app stores objects in localStorage
+    # before the pet pro has verified their email - status = "new mobile"
+    # thou the user can't invite or have clients, the sample client Ben Franklin is stored in @clients
+    # and the sample report card is in @report_cards
+    # no view or html - returns json 
+    # naming convention stuff:  "pro" for pet_pro, "active_mobile" is user's status, "sync" sync epet api to mobile device
+    def pro_new_mobile_user_sync
+        logger.debug "pro_new_mobile_user_sync start"
+        @person = Person.find_by_upid(params[:id])
+        # the like also picks up Dog Walker Sample Ben Franklin
+        @clients = @person.peeps.where("person_connections.category like 'Dog Walker%'").includes({:pets => :petphotos }, :addresses)
+        @report_cards = Dogwalk.order("updated_at desc").where("person_id = ? AND stop IS NOT NULL AND status = 'active'", @person.id)
+        @dogwalks = Dogwalk.order("updated_at desc").where("person_id = ? AND stop IS NULL AND status = 'active'", @person.id)
+        render json: {:person      => @person,
+                     :clients      => @clients,
+                     :report_cards => @report_cards,
+                     :dogwalks     => @dogwalks
+                    },     :layout => false
+        logger.debug "pro_new_mobile_user_sync end"
+    end
+
+    # refactor - 2013-07-10
+    # DogWalker app stores objects in localStorage
+    # if the pro mobile user verified their email - status = "active mobile"
+    #  find all Clients (people & pets) & related photos
+    # no view or html - returns json 
+    # naming convention stuff:  "pro" for pet_pro, "active_mobile" is user's status, "sync" sync epet api to mobile device
+    def pro_active_mobile_user_sync
+        logger.debug "pro_active_mobile_user_sync start"
+        @person = Person.find_by_upid(params[:id])
+        process_accepted_invitations(@person)   # check for un-processed invitations
+        # the like also picks up Dog Walker Sample Ben Franklin
+        @clients = @person.peeps.where("person_connections.category like 'Dog Walker%'").includes({:pets => :petphotos }, :addresses)
+        @invitations = Invitation.select(:invitee_email).where(:invitor_email => @person.email, :status => ['invited','accepted'])
+        @report_cards = Dogwalk.order("updated_at desc").where("person_id = ? AND stop IS NOT NULL AND status = 'active'", @person.id)
+        @dogwalks = Dogwalk.order("updated_at desc").where("person_id = ? AND stop IS NULL AND status = 'active'", @person.id)
+        render json: {:person      => @person,
+                     :clients      => @clients,
+                     :invitations  => @invitations,
+                     :report_cards => @report_cards,
+                     :dogwalks     => @dogwalks
+                    },     :layout => false
+        logger.debug "pro_active_mobile_user_sync end"
+    end
+
+
+    # using the person param, see if there are any 'accepted' invitations that need processing
+    # (invitor scenario) this user might have accepted an invitation
+    # when the invitee accepts the invitation and is "active mobile" and syncs for the first time then we create 
+    #   both sides of the relationships
+    # after an invitation has been processed, the invitor_status or invitee_status is updated
+    def process_accepted_invitations(invitee)
+        logger.debug "process_accepted_invitations start"
+        @invitee = invitee
+        @invitees = Invitation.where(:invitee_email => @invitee.email, :status => 'accepted', :invitee_status => nil)
+        logger.debug "process_accepted_invitations - num un-processed invitations = " + @invitees.length.to_s
+        @invitees.each do |i|
+            create_peep_relationships(i, @invitee)
+            i.invitee_status = 'relationships-built'
+            i.invitor_status = 'relationships-built'
+            i.status = 'relationships-built'
+            i.save
+        end
+        logger.debug "process_accepted_invitations end"
+    end
+
+    # create two rows in the table person_connections
+    # create rows in the table caretakers for each pet, depending on the person.persona
+    def create_peep_relationships(invitation, invitee)
+        logger.debug "create_peep_relationships start"
+        @invitation = invitation
+        @invitee = invitee
+        @invitor = Person.where(:email => @invitation.invitor_email, :status => 'active mobile').order('updated_at DESC').first!
+        logger.debug "debug point alpha"
+        @invitor.person_connections.build(:person_a_id => @invitor.id, :person_b_id => @invitee.id,
+            :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
+        #  create the second (reverse) person_connection 
+        @invitee.person_connections.build(:person_a_id => @invitee.id, :person_b_id => @invitor.id,
+            :category => @invitation.category, :invitation_id => @invitation.id, :status => 'active')
+        logger.debug "debug point beta"
+        if @invitee.personas.eql? 'PetOwner'     # invitor gets a caretaker row for each of invitee's pets
+            @pets = @invitee.pets.where("caretakers.primary_role = 'Owner'")
+            @pets.each do |pet|
+                if @invitation.category.eql? 'Dog Walker'
+                    p_role = 'Dog Walker'
+                elsif @invitation.category.eql? 'Spouse-Partner'
+                    p_role = 'Owner'
+                elsif @invitation.category.eql? 'Family'
+                    p_role = 'Family'
+                else
+                    p_role = 'Friend'
+                end
+                @invitor.caretakers.build(:pet_id => pet.id, :primary_role => p_role, :status => 'active', :started_at => Time.now)
+            end
+        end
+        logger.debug "debug point gamma"
+        if @invitor.personas.eql? 'PetOwner'     # invitee gets a caretaker row for each of invitee's pets
+            @pets = @invitor.pets.where("caretakers.primary_role = 'Owner'")
+            @pets.each do |pet|
+                if @invitation.category.eql? 'Dog Walker'
+                    p_role = 'Dog Walker'
+                elsif @invitation.category.eql? 'Spouse-Partner'
+                    p_role = 'Owner'
+                elsif @invitation.category.eql? 'Family'
+                    p_role = 'Family'
+                else
+                    p_role = 'Friend'
+                end
+                @invitee.caretakers.build(:pet_id => pet.id, :primary_role => p_role, :status => 'active', :started_at => Time.now)
+            end
+        end
+        @invitor.save
+        @invitee.save
+        logger.debug "create_peep_relationships end"
     end
 
 
@@ -477,7 +677,33 @@ class PeopleController < ApplicationController
       #render json: {:person => @person.as_json(:include => [:pets => { :include => :petphotos }, :addresses] ) }, :layout => false
 
   end
-  
+
+    # always want a set of photos for the user to see
+    def find_pet_photos(person)
+        logger.debug("find_pet_photos start")
+        @photos = ['sample/00.png', 'sample/01.png', 'sample/02.png', 'sample/03.png', 'sample/04.png', 'sample/05.png',
+          'sample/06.png', 'sample/07.png', 'sample/08.png', 'sample/09.png', 'sample/10.png', 'sample/11.png']
+
+        # logger.debug "@pet_ids.size = #{@pet_ids.size}"
+        # if @pet_ids.size > 0
+        #     # if there are any real photos, add them starting at beginning of the array
+        #     #@photos = Petphoto.where(:pet_id => @pet_ids).order("created_at DESC").uniq.pluck(:image)
+        #     petphotos = Petphoto.where(:pet_id => @pet_ids).order("created_at DESC").uniq(:image)
+        #     x = 0
+        #     logger.debug "petphotos size = " + petphotos.size.to_s
+        #     if petphotos && petphotos.size > 0
+        #         petphotos.each do |p|
+        #             @photos[x] = "petphotos/" + p.image
+        #             logger.debug "adding real pet photo - x = #{x} "
+        #             x += 1
+        #         end
+        #     end
+        # end
+        logger.debug("find_pet_photos end")
+        return @photos
+    end
+
+
 end
 
 

@@ -10,7 +10,7 @@ class Person < ActiveRecord::Base
     accepts_nested_attributes_for :addresses
     
     before_create { generate_upid }
-    before_update { generate_token(:comments) }
+    #before_update { generate_token(:comments) }
     
     # reference: http://stackoverflow.com/questions/2168442/many-to-many-relationship-with-the-same-model-in-rails
     has_many(:person_connections, :foreign_key => :person_a_id, :dependent => :destroy)
@@ -33,12 +33,33 @@ class Person < ActiveRecord::Base
     end
 
     def as_json(options={})
-        #super(:include => :petphotos)
-        super( :only => [:first_name, :last_name, :email, :mobile_phone, :status, :id, :upid, :image, :timezone, :personas],
-            :include => { :pets => { :only => [:id, :name, :breed, :gender, :weight, :birthdate], 
-                                  :include => { :petphotos => { :only => [:id, :image] }}},
-                          :addresses => { :only => [:id, :line1, :line2, :locality, :region, :postcode] }
-                        } )
+     # works
+        # super( :only => [:first_name, :last_name, :email, :mobile_phone, :status, :id, :upid, :image, :timezone, :personas],
+        #     :include => { :pets => { :only    => [:id, :name, :breed, :gender, :weight, :birthdate],
+        #                              :include => {:petphotos => { :only => [:id, :image] },
+        #                              
+        #                              }
+        #                            },
+        #                   :caretakers => { :only => [:primary_role, :pet_id] },
+        #                   :addresses => { :only => [:id, :line1, :line2, :locality, :region, :postcode] }
+        #                 } )
+        
+        # 2013-07-18  added caretakers under pets
+        # super( :only => [:first_name, :last_name, :email, :mobile_phone, :status, :id, :upid, :image, :timezone, :personas],
+        #     :include => { :pets => { :only    => [:id, :name, :breed, :gender, :weight, :birthdate],
+        #                              :include => {:petphotos => { :only => [:id, :image] },
+        #                                           :caretakers => { :only => [:primary_role, :pet_id, :person_id, :status] }
+        #                                          }
+        #                            },
+        #                   :addresses => { :only => [:id, :line1, :line2, :locality, :region, :postcode] }
+        #                 } )
+
+        # 2013-07-18  added caretakers under pets
+        super(    :only => [:first_name, :last_name, :email, :mobile_phone, :status, :id, :upid, :image, :timezone, :personas],
+               :include => { :addresses => { :only => [:id, :line1, :line2, :locality, :region, :postcode] } }
+             )
+
+
     end
     
 end
