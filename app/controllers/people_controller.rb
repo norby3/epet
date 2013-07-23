@@ -341,11 +341,14 @@ class PeopleController < ApplicationController
 
         @report_cards = Dogwalk.order("updated_at desc").where("person_id = ? AND stop IS NOT NULL AND status = 'active'", @person.id)
         @dogwalks = Dogwalk.order("updated_at desc").where("person_id = ? AND stop IS NULL AND status = 'active'", @person.id)
+        
+        @pets = Pet.joins(:caretakers).includes(:petphotos).where("caretakers.person_id = ?", @person.id).all.as_json(:include => {:petphotos => {:only => [ :id, :image ]}})
         logger.debug "new_mobile_user_sync end - next step is render"
         render json: {:person       => @pp,
                       :photos       => find_pet_photos(@p),
                       :report_cards => @report_cards,
-                      :dogwalks     => @dogwalks
+                      :dogwalks     => @dogwalks,
+                      :pets         => @pets
                      },
               :layout => false
     end
