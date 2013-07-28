@@ -102,12 +102,18 @@ class PeopleController < ApplicationController
             if @person.personas.eql? 'Pro_Dog_Walker'
                 @benf = Person.where(:last_name => 'Franklin (sample)', :first_name => 'Ben', :mobile_phone => '(215) 123-4567').first
                 logger.debug("@benf.id = " + @benf.id.to_s)
-                @person.person_connections.build(:person_a_id => @person.id, :person_b_id => @benf.id, :category => 'Dog Walker Sample')
+                #@person.person_connections.build(:person_a_id => @person.id, :person_b_id => @benf.id, :category => 'Dog Walker Sample')
+                @benf.person_connections.build(:person_a_id => @benf.id, :person_b_id => @person.id, :category => 'Dog Walker Sample')
                 # create caretaker for Ben Franklin's pet Fido
                 @person.caretakers.build(:pet_id => @benf.pets[0].id, :primary_role => 'Dog Walker Sample', :started_at => Time.now)
                 @person.save
+                @benf.save
+                @benjamin = @benf.as_json(:include => :addresses)
+                @benjamin[:pets] = Pet.joins(:caretakers).where("caretakers.primary_role = 'Owner' and caretakers.person_id = ?", @benf.id).all.as_json(:include => {:petphotos => {:only => [ :id, :image ]}})
+
                 render json: {:person       => @person,
-                              :clients      => @benf
+                              #:clients      => @benf
+                              :clients      => @benjamin
                              },
                       :layout => false
             else 
@@ -542,15 +548,25 @@ class PeopleController < ApplicationController
     def pro_new_mobile_user_sync
         logger.debug "pro_new_mobile_user_sync start"
         @person = Person.find_by_upid(params[:id])
+        
         # the like also picks up Dog Walker Sample Ben Franklin
-        @clients = @person.peeps.where("person_connections.category like 'Dog Walker%'").includes({:pets => :petphotos }, :addresses)
+        # 2013-07-27 changed - Person.as_json no longer includes Pets
+#        @clients = @person.peeps.where("person_connections.category like 'Dog Walker%'").includes({:pets => :petphotos }, :addresses)
+        @clients = Person.joins(:person_connections).where("person_connections.category like 'Dog Walker%' AND person_connections.person_b_id = ?", @person.id).all
+        @clients_pets_array = []
+        @clients.each do |client|
+            @clientx = client.as_json(:include => :addresses)
+            @clientx[:pets] = Pet.joins(:caretakers).where("caretakers.primary_role = 'Owner' and caretakers.person_id = ?", client.id).all.as_json(:include => {:petphotos => {:only => [ :id, :image ]}})
+            @clients_pets_array << @clientx
+        end
+        
         @report_cards = Dogwalk.order("updated_at desc").where("person_id = ? AND stop IS NOT NULL AND status = 'active'", @person.id)
         @dogwalks = Dogwalk.order("updated_at desc").where("person_id = ? AND stop IS NULL AND status = 'active'", @person.id)
         render json: {:person      => @person,
-                     :clients      => @clients,
+                     :clients      => @clients_pets_array,
                      :report_cards => @report_cards,
                      :dogwalks     => @dogwalks
-                    },     :layout => false
+                     },     :layout => false
         logger.debug "pro_new_mobile_user_sync end"
     end
 
@@ -565,12 +581,20 @@ class PeopleController < ApplicationController
         @person = Person.find_by_upid(params[:id])
         process_accepted_invitations(@person)   # check for un-processed invitations
         # the like also picks up Dog Walker Sample Ben Franklin
-        @clients = @person.peeps.where("person_connections.category like 'Dog Walker%'").includes({:pets => :petphotos }, :addresses)
+#        @clients = @person.peeps.where("person_connections.category like 'Dog Walker%'").includes({:pets => :petphotos }, :addresses)
+        @clients = Person.joins(:person_connections).where("person_connections.category like 'Dog Walker%' AND person_connections.person_b_id = ?", @person.id).all
+        @clients_pets_array = []
+        @clients.each do |client|
+            @clientx = client.as_json(:include => :addresses)
+            @clientx[:pets] = Pet.joins(:caretakers).where("caretakers.primary_role = 'Owner' and caretakers.person_id = ?", client.id).all.as_json(:include => {:petphotos => {:only => [ :id, :image ]}})
+            @clients_pets_array << @clientx
+        end
+        
         @invitations = Invitation.select(:invitee_email).where(:invitor_email => @person.email, :status => ['invited','accepted'])
         @report_cards = Dogwalk.order("updated_at desc").where("person_id = ? AND stop IS NOT NULL AND status = 'active'", @person.id)
         @dogwalks = Dogwalk.order("updated_at desc").where("person_id = ? AND stop IS NULL AND status = 'active'", @person.id)
         render json: {:person      => @person,
-                     :clients      => @clients,
+                     :clients      => @clients_pets_array,
                      :invitations  => @invitations,
                      :report_cards => @report_cards,
                      :dogwalks     => @dogwalks
