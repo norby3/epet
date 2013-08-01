@@ -370,7 +370,9 @@ class PeopleController < ApplicationController
         @pp[:pets] = Pet.joins(:caretakers).includes(:petphotos).where("caretakers.primary_role = 'Owner' and caretakers.person_id = ?", @person.id).all.as_json(:include => {:petphotos => {:only => [ :id, :image ]}})
 
         #@report_cards = Dogwalk.order("updated_at desc").where("person_id = ? AND stop IS NOT NULL AND status = 'active'", @person.id)
-        @report_cards = Dogwalk.order("updated_at desc").where("pet_id IN ? AND stop IS NOT NULL AND status = 'active'", @person.pet_ids.to_a)
+        #@report_cards = Dogwalk.order("updated_at desc").where("pet_id IN ? AND stop IS NOT NULL AND status = 'active'", @person.pet_ids.to_a)
+        @report_cards = Dogwalk.finished.order("updated_at desc").where(:pet_id => @person.pet_ids)
+
         @dogwalks = Dogwalk.order("updated_at desc").where("person_id = ? AND stop IS NULL AND status = 'active'", @person.id)
 
         # @family_friends = Person.joins(:person_connections).where('person_connections.category' => ['Family', 'Friend', 'Spouse-Partner'], 'person_connections.person_b_id' => @person.id).all

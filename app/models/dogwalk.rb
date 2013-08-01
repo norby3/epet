@@ -25,4 +25,13 @@ class Dogwalk < ActiveRecord::Base
       super(:include => [:petphoto, :person, {:pet => {:include => :petphotos }} ])
   end  
 
+  # finished dogwalks - stop button has been pressed
+  def self.finished
+     where("status = 'active' AND stop IS NOT NULL")
+  end
+
 end
+
+
+
+
