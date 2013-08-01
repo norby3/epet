@@ -72,6 +72,9 @@ GEM
       rack-contrib
       rails
     mime-types (1.21)
+    mini_exiftool (2.3.0)
+    mini_exiftool_vendored (8.9.7.v2)
+      mini_exiftool (>= 1.6.0)
     multi_json (1.6.1)
     pg (0.12.2)
     polyglot (0.3.3)
@@ -151,6 +154,7 @@ DEPENDENCIES
   high_voltage
   jquery-rails
   meta_request
+  mini_exiftool_vendored
   pg
   possessive
   rails (= 3.2.11)

@@ -1,10 +1,26 @@
 class Petphoto < ActiveRecord::Base
 
+    # require 'open-uri'
     belongs_to :pet
     belongs_to :dogwalk
 #    mount_uploader :image, ImageUploader
 
 #    before_save :extract_exif_data
+
+    # after_save :parse_exif_data
+    # 
+    # def parse_exif_data
+    #     logger.debug "parse_exif_data start"
+    #     if !self.image.blank? 
+    #         logger.debug "parse_exif_data self.image = " + self.image
+    #         s3host_prefix = "https://s3.amazonaws.com/epetfolio/uploads/dogwalks/"
+    #         
+    #         exif_info = EXIFR::JPEG.new(open(s3host_prefix + self.image))
+    # 
+    #     end
+    # end
+
+
 
     def extract_exif_data
         #if !self.address.blank? && !self.latitude.blank? && !self.longitude.blank? 
