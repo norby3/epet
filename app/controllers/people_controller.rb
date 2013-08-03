@@ -354,7 +354,8 @@ class PeopleController < ApplicationController
                       :photos       => find_pet_photos(@p),
                       :report_cards => @report_cards,
                       :dogwalks     => @dogwalks,
-                      :pets         => @pets
+                      :pets         => @pets,
+                      :videos       => how_to_videos
                      },
               :layout => false
     end
@@ -410,7 +411,8 @@ class PeopleController < ApplicationController
                                            "Friends"        => @friends_pets_array },
                       :invitations  => @invitations,
                       :pet_pros     => @pet_pros,
-                      :pets         => @pets
+                      :pets         => @pets,
+                      :videos       => how_to_videos
                      },
               :layout => false
     end
@@ -565,7 +567,8 @@ class PeopleController < ApplicationController
         render json: {:person      => @person,
                      :clients      => @clients_pets_array,
                      :report_cards => @report_cards,
-                     :dogwalks     => @dogwalks
+                     :dogwalks     => @dogwalks,
+                     :videos       => how_to_videos
                      },     :layout => false
         logger.debug "pro_new_mobile_user_sync end"
     end
@@ -597,7 +600,8 @@ class PeopleController < ApplicationController
                      :clients      => @clients_pets_array,
                      :invitations  => @invitations,
                      :report_cards => @report_cards,
-                     :dogwalks     => @dogwalks
+                     :dogwalks     => @dogwalks,
+                     :videos       => how_to_videos
                     },     :layout => false
         logger.debug "pro_active_mobile_user_sync end"
     end
@@ -730,6 +734,10 @@ class PeopleController < ApplicationController
         return @photos
     end
 
+    def how_to_videos
+       return Hash['Add 2 Dogs <span class="small gray">(PetOwner app)</span>','http://www.youtube.com/embed/XLCYTnjxsfg'
+           ]
+    end
 
 end
 
