@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-
+ruby '1.9.3'
 gem 'rails', '3.2.11'
 
 # Bundle edge Rails instead:
@@ -59,7 +59,7 @@ gem 'geocoder'
 gem 'simple_form'
 gem 'possessive'
 #gem 'exifr'    # wouldn't read s3 jpg files...
-gem 'mini_exiftool_vendored'    # 2013-07-28
+#gem 'mini_exiftool_vendored'    # 2013-07-28
 
 
 gem 'spawnling'  # added 2013-04-20  don't wait for email to be sent
