@@ -1,5 +1,6 @@
 Epet5::Application.routes.draw do
 
+  match 'pingserver' => 'welcome#server_ping'                   # 2013-08-03   ping server just to establish connection, wake up
   post 'verify_email2' => 'invitations#verify_email2'                    # 2013-06-21   refactoring verify my email function
   match "verifying_email" => "invitations#verifying_email"               # 2013-06-22   refactoring verify my email function
   match "verify_email_mobile_user" => "people#verify_email_mobile"       # old way      before refactoring

@@ -47,18 +47,19 @@ class PetphotosController < ApplicationController
     #   get the exif data for the image
     #   save the lat/lng/alt/etc to the table
     #   reverse geocode the address using google
-    # end loop    
+    # end loop
     # select image, created_at from petphotos where dogwalk_id IS NOT NULL and latitude IS NULL order by created_at desc;
-    def getExifDataForS3Photos 
-        s3host = "https://s3.amazonaws.com/epetfolio/uploads/dogwalks/"
-        @images = Petphoto.order("created_at desc").where("dogwalk_id IS NOT NULL and latitude IS NULL")
-        @images.each do |image|
-            
-            EXIFR::JPEG.new('IMG_6841.JPG').exif?
-            EXIFR::JPEG.new('enkhuizen.jpg').gps.latitude       # => 52.7197888888889
-            EXIFR::JPEG.new('enkhuizen.jpg').gps.longitude      # => 5.28397777777778
-        end
-    end
+    # turns out smartphone photos don't have lat/lng/alt
+    # def getExifDataForS3Photos 
+    #     s3host = "https://s3.amazonaws.com/epetfolio/uploads/dogwalks/"
+    #     @images = Petphoto.order("created_at desc").where("dogwalk_id IS NOT NULL and latitude IS NULL")
+    #     @images.each do |image|
+    #         
+    #         EXIFR::JPEG.new('IMG_6841.JPG').exif?
+    #         EXIFR::JPEG.new('enkhuizen.jpg').gps.latitude       # => 52.7197888888889
+    #         EXIFR::JPEG.new('enkhuizen.jpg').gps.longitude      # => 5.28397777777778
+    #     end
+    # end
     
 end
 

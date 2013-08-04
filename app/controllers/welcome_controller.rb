@@ -8,5 +8,8 @@ class WelcomeController < ApplicationController
         end
     end
 
+    def server_ping
+        render :json => {utc: "#{Time.new.getutc}"}
+    end
 
 end
