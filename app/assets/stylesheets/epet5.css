@@ -75,7 +75,8 @@ footer {
 }
 #splash-header {
 	text-align: center;
-	margin-bottom: 30px;
+/*	margin-bottom: 30px;*/
+	margin: 4em 0;
 }
 #splash-body {
 	margin-bottom: 50px;

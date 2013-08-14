@@ -1,0 +1,8 @@
+
+<% s3 = "https://s3.amazonaws.com/epetfolio/uploads/dogwalker-guide/" %>
+<ul class="galleryguide">
+	<% @slides.each do |s| %>
+	    <li><a href="<%=s3%><%=s%>" rel="external"><img src="<%=s3%><%=s%>"/></a></li>	
+	<% end %>
+</ul>	
+

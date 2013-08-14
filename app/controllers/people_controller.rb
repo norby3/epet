@@ -735,7 +735,12 @@ class PeopleController < ApplicationController
     end
 
     def how_to_videos
-       return Hash['Add 2 Dogs <span class="small gray">(PetOwner app)</span>','http://www.youtube.com/embed/XLCYTnjxsfg'
+       return Hash[
+           'Add Your Pet <span class="small gray">(PetOwner app)</span>',          'http://www.youtube.com/embed/XR4nv3ywXw8',
+           'Invite A Friend <span class="small gray">(PetOwner app)</span>',       'http://www.youtube.com/embed/TEhyPUMqyvE'
+           # 'Invite Your Dogwalker <span class="small gray">(PetOwner app)</span>', 'http://www.youtube.com/embed/....',
+           # 'Dog Walk Screen <span class="small gray">(PetOwner app)</span>',       'http://www.youtube.com/embed/....',
+           # 'Add 2 Dogs <span class="small gray">(PetOwner app)</span>',            'http://www.youtube.com/embed/XLCYTnjxsfg'
            ]
     end
 
