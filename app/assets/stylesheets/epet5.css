@@ -34,9 +34,13 @@ footer {
 	font-weight: bolder;
     color: #61377E;
 }
+#adws {
+	margin-top: 20px;
+}
 #freeguide {
 	font-size: 10px;
 	text-align: right;
+	color: black;
 }
 
 .vertical_line {
